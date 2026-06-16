@@ -496,17 +496,22 @@ def build_expense_record_sheet(ws):
 
 
 def _expense_formula(item_num, row):
-    """支出項目ごとの金額計算数式（給付型判定付き）"""
+    """支出項目ごとの金額計算数式（給付型判定付き）
+    全員分（D列空欄）の金額と、特定生徒の個別記録（D列に生徒番号）を加算する。
+    欠席等による返還はマイナス金額で個別記録すれば自動的に相殺される。
+    生徒番号が未入力（空白テンプレート行）の場合は空欄を返し、
+    全員分金額が二重加算されるのを防ぐ。
+    """
     return (
-        f'=IF(AND('
+        f'=IF($A{row}="","",'
+        f'IF(AND('
         f'IFERROR(XLOOKUP($A{row},生徒マスター!$A:$A,生徒マスター!$K:$K,""),"")&""<>"",'
         f'IFERROR(XLOOKUP({item_num},支出項目マスター!$A:$A,支出項目マスター!$G:$G,""),"")&""<>""'
         f'),"給",'
         f'IFERROR('
-        f'IF(SUMIFS(支出記録!$E:$E,支出記録!$B:$B,{item_num},支出記録!$D:$D,$A{row})>0,'
-        f'SUMIFS(支出記録!$E:$E,支出記録!$B:$B,{item_num},支出記録!$D:$D,$A{row}),'
-        f'SUMIFS(支出記録!$E:$E,支出記録!$B:$B,{item_num},支出記録!$D:$D,"")),'
-        f'0))'
+        f'SUMIFS(支出記録!$E:$E,支出記録!$B:$B,{item_num},支出記録!$D:$D,$A{row})'
+        f'+SUMIFS(支出記録!$E:$E,支出記録!$B:$B,{item_num},支出記録!$D:$D,""),'
+        f'0)))'
     )
 
 
@@ -901,11 +906,13 @@ def build_financial_sheet(ws):
         ws.cell(row=idx, column=5).border = border()
         ws.cell(row=idx, column=5).alignment = align("center")
 
-        # 支出合計 = SUMIF on 支出記録 for this item number
+        # 支出合計 = 個人別管理表(出力)の各生徒の確定金額（給付型は0扱い）を合算
+        # ※支出記録を直接合計すると「全員分」金額が生徒数分掛けられず、件数が合わない
+        ind_col = get_column_letter(9 + (idx - 3))
         c = ws.cell(row=idx, column=6)
         c.value = (
-            f"=SUMPRODUCT(IF(支出記録!$B$3:$B$503={num},"
-            f"IF(ISNUMBER(支出記録!$E$3:$E$503),支出記録!$E$3:$E$503,0),0))"
+            f"=SUMPRODUCT(IF(ISNUMBER('個人別管理表(出力)'!${ind_col}$4:${ind_col}$263),"
+            f"'個人別管理表(出力)'!${ind_col}$4:${ind_col}$263,0))"
         )
         c.number_format = "#,##0"
         c.fill = fill("gray")

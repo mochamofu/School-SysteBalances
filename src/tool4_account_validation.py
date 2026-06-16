@@ -125,12 +125,9 @@ def build_validation_sheet(ws):
         c.number_format = "@"
         style_formula(c)
 
-        # B: 氏名
+        # B: 氏名（口座データ入力シートの申込者氏名を直接参照）
         c = ws.cell(row=i, column=2)
-        c.value = (
-            f"=IF(A{i}=\"\",\"\","
-            f"IFERROR(XLOOKUP(A{i},生徒マスター!$A:$A,生徒マスター!$B:$B),\"未マッチ\"))"
-        )
+        c.value = f"=IF('{SRC}'!B{src_r}=\"\",\"\",'{SRC}'!B{src_r})"
         style_formula(c)
 
         # C: 記号 参考表示
