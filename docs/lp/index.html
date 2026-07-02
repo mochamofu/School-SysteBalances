@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>積立金会計 入力アシスタント｜320人分の入力を、1クリックに。</title>
+<meta name="description" content="学校徴収金（積立金）会計の現場から生まれた、Excelマスターをそのまま使える入力自動化パッケージ。クラス替え名簿の取込、支出・収入の一括入力、承認書の自動作成、決算集計までボタン操作だけ。">
+<style>
+  :root {
+    --navy: #1b2f56;
+    --navy-deep: #12203d;
+    --blue: #2f5fa8;
+    --blue-bright: #4a7fd4;
+    --sky: #eaf1fb;
+    --accent: #f5b731;
+    --green: #1e8e3e;
+    --text: #2a3038;
+    --muted: #66707d;
+    --card-border: #e3e9f2;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", "Meiryo", sans-serif;
+    color: var(--text);
+    line-height: 1.8;
+    background: #fff;
+  }
+  .container { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 72px 0; }
+  h2 {
+    font-size: 30px; color: var(--navy); text-align: center; margin-bottom: 12px;
+    letter-spacing: 0.04em;
+  }
+  .section-lead { text-align: center; color: var(--muted); margin-bottom: 48px; font-size: 15.5px; }
+  .eyebrow {
+    display: block; text-align: center; font-size: 13px; font-weight: 700;
+    color: var(--blue-bright); letter-spacing: 0.18em; margin-bottom: 10px;
+  }
+
+  /* ===== Hero ===== */
+  .hero {
+    background: linear-gradient(135deg, var(--navy-deep) 0%, var(--navy) 55%, var(--blue) 100%);
+    color: #fff; padding: 96px 0 88px; position: relative; overflow: hidden;
+  }
+  .hero::after {
+    content: ""; position: absolute; right: -120px; top: -120px; width: 480px; height: 480px;
+    border-radius: 50%; background: rgba(255,255,255,0.05);
+  }
+  .hero::before {
+    content: ""; position: absolute; left: -80px; bottom: -180px; width: 380px; height: 380px;
+    border-radius: 50%; background: rgba(255,255,255,0.04);
+  }
+  .hero .badge {
+    display: inline-block; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 999px; padding: 5px 18px; font-size: 13px; margin-bottom: 26px; letter-spacing: 0.05em;
+  }
+  .hero h1 { font-size: 44px; line-height: 1.4; letter-spacing: 0.03em; margin-bottom: 20px; }
+  .hero h1 .em { color: var(--accent); }
+  .hero p.sub { font-size: 17px; opacity: 0.92; max-width: 640px; margin-bottom: 38px; }
+  .cta-row { display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; text-decoration: none; font-weight: 700; border-radius: 10px;
+    padding: 15px 34px; font-size: 15.5px; transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0,0,0,0.22); }
+  .btn-primary { background: var(--accent); color: var(--navy-deep); }
+  .btn-ghost { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.7); }
+  .hero .stats { display: flex; gap: 44px; margin-top: 52px; flex-wrap: wrap; }
+  .hero .stat .num { font-size: 34px; font-weight: 800; color: var(--accent); line-height: 1.2; }
+  .hero .stat .label { font-size: 13px; opacity: 0.85; }
+
+  /* ===== Pain ===== */
+  .pain { background: var(--sky); }
+  .before-after { display: grid; grid-template-columns: 1fr 56px 1fr; gap: 0; align-items: stretch; }
+  .ba-col { background: #fff; border: 1px solid var(--card-border); border-radius: 14px; padding: 30px 28px; }
+  .ba-col h3 { font-size: 18px; margin-bottom: 18px; text-align: center; }
+  .ba-col.before h3 { color: #b3372a; }
+  .ba-col.after h3 { color: var(--green); }
+  .ba-col ul { list-style: none; }
+  .ba-col li { padding: 9px 0 9px 30px; position: relative; font-size: 14.5px; border-bottom: 1px dashed #e8e8e8; }
+  .ba-col li:last-child { border-bottom: none; }
+  .ba-col.before li::before { content: "×"; position: absolute; left: 4px; color: #b3372a; font-weight: 800; }
+  .ba-col.after li::before { content: "✓"; position: absolute; left: 4px; color: var(--green); font-weight: 800; }
+  .ba-arrow { display: flex; align-items: center; justify-content: center; font-size: 30px; color: var(--blue); font-weight: 800; }
+
+  /* ===== Features ===== */
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .feature {
+    border: 1px solid var(--card-border); border-radius: 14px; padding: 28px 24px;
+    background: #fff; box-shadow: 0 2px 10px rgba(27,47,86,0.05);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .feature:hover { transform: translateY(-4px); box-shadow: 0 10px 26px rgba(27,47,86,0.12); }
+  .feature .icon {
+    width: 52px; height: 52px; border-radius: 12px; background: var(--sky);
+    display: flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 16px;
+  }
+  .feature h3 { font-size: 17px; color: var(--navy); margin-bottom: 8px; }
+  .feature p { font-size: 13.8px; color: var(--muted); }
+  .feature .tag {
+    display: inline-block; font-size: 11px; font-weight: 700; color: var(--blue);
+    background: var(--sky); border-radius: 999px; padding: 2px 10px; margin-bottom: 10px;
+  }
+
+  /* ===== Steps ===== */
+  .steps { background: var(--navy); color: #fff; }
+  .steps h2 { color: #fff; }
+  .steps .section-lead { color: rgba(255,255,255,0.75); }
+  .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .step-card { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.16); border-radius: 14px; padding: 30px 26px; }
+  .step-card .no {
+    width: 44px; height: 44px; border-radius: 50%; background: var(--accent); color: var(--navy-deep);
+    font-weight: 800; font-size: 20px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;
+  }
+  .step-card h3 { font-size: 17px; margin-bottom: 8px; }
+  .step-card p { font-size: 13.8px; opacity: 0.85; }
+
+  /* ===== Safety ===== */
+  .safety-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  .safety-card {
+    border: 1px solid var(--card-border); border-left: 5px solid var(--green);
+    border-radius: 10px; padding: 22px 20px; background: #fff;
+  }
+  .safety-card h3 { font-size: 15px; color: var(--navy); margin-bottom: 6px; }
+  .safety-card p { font-size: 13px; color: var(--muted); }
+
+  /* ===== Proof ===== */
+  .proof { background: var(--sky); }
+  .proof-box {
+    background: #fff; border: 1px solid var(--card-border); border-radius: 14px;
+    padding: 34px 36px; max-width: 780px; margin: 0 auto;
+  }
+  .proof-box ul { list-style: none; }
+  .proof-box li { padding: 8px 0 8px 32px; position: relative; font-size: 14.5px; }
+  .proof-box li::before { content: "✔"; position: absolute; left: 4px; color: var(--green); font-weight: 800; }
+  .proof-note { font-size: 12.5px; color: var(--muted); margin-top: 16px; }
+
+  /* ===== FAQ ===== */
+  .faq-list { max-width: 780px; margin: 0 auto; }
+  .faq-item { border-bottom: 1px solid var(--card-border); padding: 20px 6px; }
+  .faq-item .q { font-weight: 700; color: var(--navy); font-size: 15.5px; margin-bottom: 6px; }
+  .faq-item .q::before { content: "Q. "; color: var(--blue-bright); }
+  .faq-item .a { font-size: 14px; color: var(--muted); }
+  .faq-item .a::before { content: "A. "; color: var(--accent); font-weight: 800; }
+
+  /* ===== Final CTA ===== */
+  .final-cta { background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%); color: #fff; text-align: center; }
+  .final-cta h2 { color: #fff; font-size: 32px; }
+  .final-cta p { opacity: 0.9; margin-bottom: 34px; }
+  .final-cta .cta-row { justify-content: center; }
+
+  footer { background: var(--navy-deep); color: rgba(255,255,255,0.65); padding: 28px 0; font-size: 12.5px; text-align: center; }
+  footer a { color: rgba(255,255,255,0.85); }
+
+  @media (max-width: 860px) {
+    .hero h1 { font-size: 32px; }
+    .features-grid, .steps-grid { grid-template-columns: 1fr; }
+    .safety-grid { grid-template-columns: repeat(2, 1fr); }
+    .before-after { grid-template-columns: 1fr; }
+    .ba-arrow { transform: rotate(90deg); padding: 8px 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= Hero ================= -->
+<header class="hero">
+  <div class="container">
+    <span class="badge">学校徴収金（積立金）会計の現場から生まれた入力自動化パッケージ</span>
+    <h1>320人分の入力を、<br><span class="em">1クリック</span>に。</h1>
+    <p class="sub">
+      積立金会計 入力アシスタントは、いま使っている「令和○年度生積立金」のExcelマスターを
+      <strong>そのまま</strong>使い続けながら、クラス替え・支出・収入・承認書・決算までの
+      入力作業をボタン操作だけにする、経営企画室のためのアシスタントです。
+    </p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="https://github.com/mochamofu/School-SysteBalances">今すぐ導入する（GitHub）</a>
+      <a class="btn btn-ghost" href="#features">機能を見る</a>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="num">1/320</div><div class="label">支出1件あたりの入力回数（従来: 生徒ごと320回）</div></div>
+      <div class="stat"><div class="num">約10分</div><div class="label">導入にかかる時間（初回のみ）</div></div>
+      <div class="stat"><div class="num">100%</div><div class="label">書き込み前の自動バックアップ実施率</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= Pain ================= -->
+<section class="pain">
+  <div class="container">
+    <span class="eyebrow">BEFORE / AFTER</span>
+    <h2>その入力作業、まだ手でやりますか？</h2>
+    <p class="section-lead">現場ヒアリングで挙がった「つらい作業」が、こう変わります。</p>
+    <div class="before-after">
+      <div class="ba-col before">
+        <h3>これまで</h3>
+        <ul>
+          <li>クラス替えのたび、掲示名簿を見ながら320人分の組・番号を1行ずつ修正</li>
+          <li>支出のたび、同じ金額を315人分入力して、転退学・給付型・欠席を1人ずつ直す</li>
+          <li>口座振替の結果を見ながら、入金できた生徒に1人ずつ金額を入力</li>
+          <li>支出承認書・収入承認書に同じ情報をもう一度手書き</li>
+          <li>年度末は電卓で項目ごとの合計を出して決算書に直打ち</li>
+        </ul>
+      </div>
+      <div class="ba-arrow">→</div>
+      <div class="ba-col after">
+        <h3>入力アシスタント導入後</h3>
+        <ul>
+          <li>名簿を貼り付けて2クリック。氏名で自動照合、同姓同名だけ確認</li>
+          <li>件名と一人あたり金額を入れ、例外の生徒だけ表に書いて1クリック</li>
+          <li>未納者の精算番号だけ書けば、残り全員に自動で金額が入る</li>
+          <li>一括入力と同時に承認書シートが自動で埋まる。印刷するだけ</li>
+          <li>1クリックで全項目の人数・単価・執行総額が一覧に</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Features ================= -->
+<section id="features">
+  <div class="container">
+    <span class="eyebrow">FEATURES</span>
+    <h2>ボタン9個に、業務のすべてを。</h2>
+    <p class="section-lead">メニューシートのボタンを押すだけ。Excelの知識も、VBAの知識もいりません。</p>
+    <div class="features-grid">
+      <div class="feature">
+        <div class="icon">📋</div>
+        <span class="tag">毎年4月</span>
+        <h3>クラス替え名簿の自動取込</h3>
+        <p>掲示用名簿をそのまま貼り付けるだけで、8クラス分のブロック配置を自動解析。氏名でマスターと照合し、組・番号を一括反映します。新入生の一括登録にも対応。</p>
+      </div>
+      <div class="feature">
+        <div class="icon">💸</div>
+        <span class="tag">支出のたび</span>
+        <h3>支出の一括入力</h3>
+        <p>件名と一人あたり金額を入力し、例外（対象外・返金・個別金額）の生徒だけ表に書いて実行。在籍生徒全員分が一度に入り、合計金額もその場で確認できます。</p>
+      </div>
+      <div class="feature">
+        <div class="icon">🏦</div>
+        <span class="tag">口座振替のたび</span>
+        <h3>収入の一括入力・未納管理</h3>
+        <p>振替できなかった生徒の精算番号だけを書けば、残り全員に自動入力。未納者にはマスターの「未納」印が自動で立ち、督促状づくりにそのまま使えます。</p>
+      </div>
+      <div class="feature">
+        <div class="icon">🖨️</div>
+        <span class="tag">同時に自動作成</span>
+        <h3>承認書の自動作成</h3>
+        <p>支出承認書・収入承認書が一括入力と同時に自動で埋まります。金額・対象生徒数・一人あたり金額は計算済み。確認して印刷するだけです。</p>
+      </div>
+      <div class="feature">
+        <div class="icon">📊</div>
+        <span class="tag">年度末</span>
+        <h3>決算集計ワンクリック</h3>
+        <p>使用中の全項目について、件名・対象人数・一人あたり・執行総額を一覧化。電卓での手集計と決算書への数字の直打ちから解放されます。</p>
+      </div>
+      <div class="feature">
+        <div class="icon">🛡️</div>
+        <span class="tag">いつでも</span>
+        <h3>整合性チェック＆精算書PDF</h3>
+        <p>収支の突き合わせ・転退学処理漏れ・未納者一覧を自動点検。精算書は「組-番号_氏名.pdf」で生徒別に一括保存でき、保管用PCへの格納も簡単です。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Steps ================= -->
+<section class="steps">
+  <div class="container">
+    <span class="eyebrow" style="color:#f5b731;">HOW IT WORKS</span>
+    <h2>導入は3ステップ、約10分。</h2>
+    <p class="section-lead">いまのマスターファイルには一切手を加えません。隣に置くだけです。</p>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="no">1</div>
+        <h3>ファイルを置く</h3>
+        <p>アシスタントブックとVBAモジュール8本を学校PCにコピーし、Excelでインポート。マクロ有効ブック（.xlsm）で保存します。</p>
+      </div>
+      <div class="step-card">
+        <div class="no">2</div>
+        <h3>初期設定を実行</h3>
+        <p>「初期設定」を1回実行するとメニューにボタンが並びます。設定シートにマスターの場所と年度を入れれば準備完了。</p>
+      </div>
+      <div class="step-card">
+        <div class="no">3</div>
+        <h3>練習してから本番へ</h3>
+        <p>付属の練習用ダミーファイル（架空の氏名）で一連の操作をリハーサル。安心してから本物のマスターにつなぎます。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Safety ================= -->
+<section>
+  <div class="container">
+    <span class="eyebrow">SAFETY</span>
+    <h2>「壊さない」ための4つの安全装置</h2>
+    <p class="section-lead">大切な会計データだからこそ、書き込みは慎重に設計されています。</p>
+    <div class="safety-grid">
+      <div class="safety-card">
+        <h3>自動バックアップ</h3>
+        <p>書き込みのたびに、実行前のマスターを日時付きコピーで自動保存。いつでも戻せます。</p>
+      </div>
+      <div class="safety-card">
+        <h3>構造チェック</h3>
+        <p>マスターの形が想定と違うファイルには書き込みません。誤ったファイルへの書き込みを防ぎます。</p>
+      </div>
+      <div class="safety-card">
+        <h3>上書き確認</h3>
+        <p>すでに金額が入っている列には、入力済み人数を提示して確認してから書き込みます。</p>
+      </div>
+      <div class="safety-card">
+        <h3>触らない設計</h3>
+        <p>精算番号・氏名・数式列・行や列の並びは一切変更しません。精算書の数式を守ります。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Proof ================= -->
+<section class="proof">
+  <div class="container">
+    <span class="eyebrow">VALIDATED</span>
+    <h2>実物のファイルで検証済み</h2>
+    <p class="section-lead">思いつきの設計ではありません。実際のマスター・名簿・承認書の構造解析に基づいています。</p>
+    <div class="proof-box">
+      <ul>
+        <li>実物の掲示用名簿（8クラス×約40名のブロック配置）を313名分、自動解析に成功</li>
+        <li>支出一括入力（単価520円×315名＋例外3件）後、支出合計・残金・精算書の数式反応をすべて確認</li>
+        <li>収入一括入力（76,000円×312名＋未納3名）後、収入合計・未納判定の自動反応を確認</li>
+        <li>クラス替え80名分の照合→反映のフルサイクルで不一致0件</li>
+        <li>決算集計が実データの項目別合計と完全一致</li>
+      </ul>
+      <p class="proof-note">※検証は匿名化した実ファイルのコピーに対して実施。生徒の氏名・個人情報は一切保存・公開していません。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section>
+  <div class="container">
+    <span class="eyebrow">FAQ</span>
+    <h2>よくある質問</h2>
+    <p class="section-lead">導入前の不安にお答えします。</p>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="q">いま使っているマスターファイルは作り直しになりますか？</div>
+        <div class="a">いいえ。「令和○年度生積立金」はそのまま使い続けます。アシスタントは隣に置く別ファイルで、マスターの決まった場所に書き込むだけです。行・列・数式には一切触れません。</div>
+      </div>
+      <div class="faq-item">
+        <div class="q">Excelに詳しくなくても使えますか？</div>
+        <div class="a">はい。日々の操作はメニューのボタン9個と、黄色いセルへの入力だけです。VBAのコードにはすべて平易な日本語の説明を付けているので、引き継ぎ時にも中身を確認できます。</div>
+      </div>
+      <div class="faq-item">
+        <div class="q">間違えて実行してしまったら？</div>
+        <div class="a">すべての書き込みの直前に、マスターの控え（日時付きコピー）が自動で作られます。バックアップフォルダのコピーを元の名前に戻すだけで復旧できます。</div>
+      </div>
+      <div class="faq-item">
+        <div class="q">動作環境は？</div>
+        <div class="a">Windows + Microsoft 365（またはExcel 2019以降）です。追加のソフトやインターネット接続は不要で、データはすべて学校PCの中だけで処理されます。</div>
+      </div>
+      <div class="faq-item">
+        <div class="q">費用はかかりますか？</div>
+        <div class="a">パッケージ自体は無償です。生成スクリプト・VBAモジュール・手順書PDF・練習用ダミーファイルまで、すべてリポジトリに含まれています。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Final CTA ================= -->
+<section class="final-cta">
+  <div class="container">
+    <h2>今年のクラス替えから、間に合います。</h2>
+    <p>導入10分。まずは練習用ファイルで、320人分の入力が1クリックになる体験を。</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="https://github.com/mochamofu/School-SysteBalances">GitHubリポジトリを開く</a>
+      <a class="btn btn-ghost" href="https://github.com/mochamofu/School-SysteBalances/blob/main/docs/%E5%85%A5%E5%8A%9B%E3%82%A2%E3%82%B7%E3%82%B9%E3%82%BF%E3%83%B3%E3%83%88_%E6%89%8B%E9%A0%86%E6%9B%B8.pdf">手順書PDFを読む</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    積立金会計 入力アシスタント ― 学校徴収金会計のための入力自動化パッケージ<br>
+    <a href="https://github.com/mochamofu/School-SysteBalances">github.com/mochamofu/School-SysteBalances</a>
+  </div>
+</footer>
+
+</body>
+</html>
