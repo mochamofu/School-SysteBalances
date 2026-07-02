@@ -1,15 +1,18 @@
-# site/ フォルダを GitHub Pages に自動公開するワークフロー
+# site/ フォルダを GitHub Pages に公開するワークフロー
 #
-# 有効化の手順（1回だけ・無料）:
-#   GitHubリポジトリの Settings → Pages → Source を「GitHub Actions」にする
-#   → 以後、mainにpushするたびに自動で公開が更新される
+# ※注意: このリポジトリはプライベートのため、無料プランでは GitHub Pages を
+#   使えません（Pages はパブリックリポジトリなら無料、プライベートは GitHub Pro 以上）。
+#   そのため自動実行はせず、手動実行（workflow_dispatch）のみにしてあります。
+#   無料で公開したい場合は site/README.md の Netlify Drop / Cloudflare Pages を
+#   使ってください（どちらもプライベートのままでOK・無料）。
+#
+# GitHub Pro に加入した／リポジトリをパブリックにした場合:
+#   Settings → Pages → Source を「GitHub Actions」にしてから
+#   Actions タブ → このワークフロー → Run workflow で公開できます。
 #   公開URL: https://mochamofu.github.io/School-SysteBalances/
 name: Deploy LP to GitHub Pages
 
 on:
-  push:
-    branches: [main]
-    paths: ['site/**']
   workflow_dispatch:
 
 permissions:
