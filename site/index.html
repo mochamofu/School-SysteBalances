@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>積立金会計 入力アシスタント｜320人分の入力を、1クリックに。</title>
-<meta name="description" content="学校徴収金（積立金）会計のExcelマスターをそのまま使える入力自動化パッケージ。クラス替え名簿の取込、支出・収入の一括入力、承認書の自動作成、決算集計までボタン操作だけ。無料・オープンソース。">
+<meta name="description" content="学校徴収金（積立金）会計のExcelマスターをそのまま使える入力自動化パッケージ。クラス替え名簿の取込、支出・収入の一括入力、承認書の自動作成、決算集計までボタン操作だけ。初期費用0円・30日間無料トライアル。">
 <meta property="og:title" content="積立金会計 入力アシスタント">
 <meta property="og:description" content="320人分の入力を、1クリックに。学校徴収金会計のための入力自動化パッケージ。">
 <meta property="og:type" content="website">
@@ -295,20 +295,47 @@
   .proof-visual .dim { color: #7d8fad; }
 
   /* ---------- pricing ---------- */
-  .pricing-card {
-    max-width: 620px; margin: 0 auto; background: #fff; border-radius: var(--radius-lg);
-    border: 1px solid var(--line-200); box-shadow: var(--shadow-md); overflow: hidden; text-align: center;
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: stretch; }
+  .plan-card {
+    background: #fff; border-radius: var(--radius-lg); border: 1px solid var(--line-200);
+    box-shadow: var(--shadow-sm); overflow: hidden; text-align: center; position: relative;
+    display: flex; flex-direction: column;
+    transition: transform .2s ease, box-shadow .2s ease;
   }
-  .pricing-card .head { background: linear-gradient(135deg, var(--navy-800), var(--blue-600)); color: #fff; padding: 30px; }
-  .pricing-card .head .plan { font-size: 13px; font-weight: 700; letter-spacing: .2em; opacity: .85; }
-  .pricing-card .price { font-family: var(--font-num); font-size: 72px; font-weight: 800; color: var(--navy-800); line-height: 1.1; padding: 34px 0 4px; }
-  .pricing-card .price small { font-size: 22px; font-weight: 700; }
-  .pricing-card .per { color: var(--ink-400); font-size: 13px; margin-bottom: 26px; }
-  .pricing-card ul { list-style: none; text-align: left; max-width: 400px; margin: 0 auto 30px; }
-  .pricing-card li { display: flex; gap: 10px; padding: 8px 0; font-size: 14px; }
-  .pricing-card li::before { content: "✓"; color: var(--green-600); font-weight: 800; }
-  .pricing-card .foot { padding: 0 30px 38px; }
-  .pricing-card .fine { font-size: 12px; color: var(--ink-400); margin-top: 14px; }
+  .plan-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .plan-card.featured {
+    border: 2px solid var(--amber-500); box-shadow: var(--shadow-lg);
+    transform: scale(1.03); z-index: 1;
+  }
+  .plan-card.featured:hover { transform: scale(1.03) translateY(-4px); }
+  .plan-card .ribbon {
+    position: absolute; top: 14px; right: -34px; transform: rotate(38deg);
+    background: var(--amber-500); color: var(--navy-950); font-size: 11px; font-weight: 800;
+    padding: 5px 40px; letter-spacing: .08em;
+  }
+  .plan-card .head { padding: 26px 20px 0; }
+  .plan-card .head .plan { font-family: var(--font-num); font-size: 12px; font-weight: 800; letter-spacing: .2em; color: var(--blue-500); }
+  .plan-card .head .plan-jp { font-size: 17px; font-weight: 800; color: var(--navy-800); margin-top: 4px; }
+  .plan-card .head .for { font-size: 12px; color: var(--ink-400); margin-top: 4px; }
+  .plan-card .price { font-family: var(--font-num); font-size: 46px; font-weight: 800; color: var(--navy-800); line-height: 1.1; padding: 20px 0 2px; }
+  .plan-card.featured .price { font-size: 54px; }
+  .plan-card .price small { font-size: 17px; font-weight: 700; }
+  .plan-card .per { color: var(--ink-400); font-size: 12px; margin-bottom: 20px; }
+  .plan-card ul { list-style: none; text-align: left; margin: 0 26px 26px; flex: 1; }
+  .plan-card li { display: flex; gap: 9px; padding: 7px 0; font-size: 13.3px; line-height: 1.7; border-bottom: 1px dashed var(--line-200); }
+  .plan-card li:last-child { border-bottom: none; }
+  .plan-card li::before { content: "✓"; color: var(--green-600); font-weight: 800; flex: none; }
+  .plan-card li.na { color: var(--ink-400); }
+  .plan-card li.na::before { content: "―"; color: var(--ink-400); }
+  .plan-card .foot { padding: 0 26px 30px; }
+  .plan-card .foot .btn { width: 100%; padding: 13px 0; font-size: 14px; }
+  .pricing-notes { max-width: 760px; margin: 34px auto 0; font-size: 12.5px; color: var(--ink-600); line-height: 2; }
+  .pricing-notes li { list-style: none; padding-left: 1.2em; text-indent: -1.2em; }
+  .price-context {
+    max-width: 760px; margin: 44px auto 0; background: var(--sky-100); border-radius: var(--radius-md);
+    padding: 24px 28px; font-size: 13.5px; color: var(--navy-800);
+  }
+  .price-context strong { color: var(--navy-800); }
 
   /* ---------- faq ---------- */
   .faq-list { max-width: 820px; margin: 0 auto; }
@@ -397,7 +424,7 @@
       <li><a href="#pricing">料金</a></li>
       <li><a href="#faq">FAQ</a></li>
     </ul>
-    <a class="nav-cta" href="https://github.com/mochamofu/School-SysteBalances">無料で導入</a>
+    <a class="nav-cta" href="mailto:info@cocorolab.co.jp?subject=%E7%A9%8D%E7%AB%8B%E9%87%91%E4%BC%9A%E8%A8%88%20%E5%85%A5%E5%8A%9B%E3%82%A2%E3%82%B7%E3%82%B9%E3%82%BF%E3%83%B3%E3%83%88%20%E7%84%A1%E6%96%99%E3%83%88%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%AB%E7%94%B3%E8%BE%BC">無料トライアル</a>
   </div>
 </nav>
 
@@ -405,7 +432,7 @@
 <header class="hero" id="top">
   <div class="container inner">
     <div>
-      <span class="hero-badge"><span class="dot">NEW</span>実物の積立金マスターにそのまま使える・無料</span>
+      <span class="hero-badge"><span class="dot">NEW</span>実物の積立金マスターにそのまま使える・初期費用0円</span>
       <h1>320人分の入力を、<br><span class="amber">1クリック</span>に。</h1>
       <p class="sub">
         クラス替え、支出、口座振替、承認書、決算 ——
@@ -413,8 +440,8 @@
         経営企画室のためのアシスタントです。
       </p>
       <div class="cta-row">
-        <a class="btn btn-amber" href="https://github.com/mochamofu/School-SysteBalances">無料で導入する<span class="arrow">→</span></a>
-        <a class="btn btn-outline-light" href="#tour">画面を見る</a>
+        <a class="btn btn-amber" href="mailto:info@cocorolab.co.jp?subject=%E7%A9%8D%E7%AB%8B%E9%87%91%E4%BC%9A%E8%A8%88%20%E5%85%A5%E5%8A%9B%E3%82%A2%E3%82%B7%E3%82%B9%E3%82%BF%E3%83%B3%E3%83%88%20%E7%84%A1%E6%96%99%E3%83%88%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%AB%E7%94%B3%E8%BE%BC">30日間無料で試す<span class="arrow">→</span></a>
+        <a class="btn btn-outline-light" href="#pricing">料金を見る</a>
       </div>
       <p class="note">Windows + Microsoft 365 / Excel 2019以降 ・ インターネット接続不要 ・ データは校内から出ません</p>
     </div>
@@ -474,7 +501,7 @@
     <div class="stat-cell reveal"><div class="num">1<small>/320</small></div><div class="label">支出1件あたりの入力操作。従来は生徒ごとに約320回の入力が必要でした</div></div>
     <div class="stat-cell reveal d1"><div class="num">10<small>分</small></div><div class="label">導入にかかる時間。マクロのインポートと初期設定だけ（初回のみ）</div></div>
     <div class="stat-cell reveal d2"><div class="num">100<small>%</small></div><div class="label">書き込み前の自動バックアップ実施率。失敗してもいつでも戻せます</div></div>
-    <div class="stat-cell reveal d3"><div class="num">¥0</div><div class="label">導入・利用ともに無料。オープンソースとして全コードを公開しています</div></div>
+    <div class="stat-cell reveal d3"><div class="num">¥62</div><div class="label">生徒1人あたりの月額換算（320名校・スタンダードプラン）。校務支援システムの生徒単価相場の約1/5</div></div>
   </div>
 </div>
 
@@ -799,24 +826,81 @@
   <div class="container">
     <div class="center">
       <span class="eyebrow">Pricing</span>
-      <h2 class="section-title">料金は、いつまでも無料。</h2>
-      <p class="section-lead">オープンソースとして全コードを公開しています。ライセンス費も、月額費も、追加費用もありません。</p>
+      <h2 class="section-title">事務1時間分の時給で、1ヶ月分の入力を。</h2>
+      <p class="section-lead">初期費用0円・30日間の無料トライアル付き。年間契約の月額制で、いつでも学校の予算計画に組み込めます。</p>
     </div>
-    <div class="pricing-card reveal">
-      <div class="head"><div class="plan">OPEN SOURCE PLAN</div></div>
-      <div class="price">¥0<small>/永年</small></div>
-      <div class="per">導入費・月額費・サポート更新費 すべて不要</div>
-      <ul>
-        <li>入力アシスタント本体（Excelブック + VBAモジュール8本）</li>
-        <li>練習用ダミーファイル一式（架空の氏名で安全にリハーサル）</li>
-        <li>導入・操作手順書PDF（全手順を画面付きで解説）</li>
-        <li>操作アニメーション（どこをクリックするかGIFで確認）</li>
-        <li>ソースコード公開 — 中身を確認・自由に改修OK</li>
-      </ul>
-      <div class="foot">
-        <a class="btn btn-navy" href="https://github.com/mochamofu/School-SysteBalances">GitHubから無料で入手<span class="arrow">→</span></a>
-        <p class="fine">動作環境: Windows + Microsoft 365（または Excel 2019 以降）</p>
+    <div class="pricing-grid">
+
+      <div class="plan-card reveal">
+        <div class="head">
+          <div class="plan">LITE</div>
+          <div class="plan-jp">ライト</div>
+          <div class="for">まず1学年から試したい学校に</div>
+        </div>
+        <div class="price">¥9,800<small>/月</small></div>
+        <div class="per">1学年（1会計）・年間契約・税別</div>
+        <ul>
+          <li>入力アシスタント一式（1学年分の積立金会計）</li>
+          <li>練習用ダミーファイル・手順書PDF・操作アニメーション</li>
+          <li>メールサポート（2営業日以内に返信）</li>
+          <li>バグ修正アップデート</li>
+          <li class="na">新年度対応アップデート（様式変更への追随）</li>
+          <li class="na">導入支援・オンライン研修</li>
+        </ul>
+        <div class="foot"><a class="btn btn-navy" href="mailto:info@cocorolab.co.jp?subject=%E3%80%90%E3%83%A9%E3%82%A4%E3%83%88%E3%80%91%E7%A9%8D%E7%AB%8B%E9%87%91%E4%BC%9A%E8%A8%88%20%E5%85%A5%E5%8A%9B%E3%82%A2%E3%82%B7%E3%82%B9%E3%82%BF%E3%83%B3%E3%83%88%20%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B">お問い合わせ</a></div>
       </div>
+
+      <div class="plan-card featured reveal d1">
+        <div class="ribbon">おすすめ</div>
+        <div class="head">
+          <div class="plan">STANDARD</div>
+          <div class="plan-jp">スタンダード</div>
+          <div class="for">全学年でしっかり使いたい学校に</div>
+        </div>
+        <div class="price">¥19,800<small>/月</small></div>
+        <div class="per">全学年（3会計まで）・年間契約・税別</div>
+        <ul>
+          <li>入力アシスタント一式（全学年・3会計まで）</li>
+          <li>練習用ダミーファイル・手順書PDF・操作アニメーション</li>
+          <li>優先メールサポート（翌営業日までに返信）</li>
+          <li><span>バグ修正＋<b>新年度対応アップデート</b>（名簿様式・承認書様式の変更に追随）</span></li>
+          <li>導入支援オンライン1回（初期設定を一緒に実施）</li>
+          <li class="na">担当者向けオンライン研修・引き継ぎ支援</li>
+        </ul>
+        <div class="foot"><a class="btn btn-amber" href="mailto:info@cocorolab.co.jp?subject=%E3%80%90%E3%82%B9%E3%82%BF%E3%83%B3%E3%83%80%E3%83%BC%E3%83%89%E3%80%91%E7%A9%8D%E7%AB%8B%E9%87%91%E4%BC%9A%E8%A8%88%20%E5%85%A5%E5%8A%9B%E3%82%A2%E3%82%B7%E3%82%B9%E3%82%BF%E3%83%B3%E3%83%88%20%E7%84%A1%E6%96%99%E3%83%88%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%AB%E7%94%B3%E8%BE%BC">30日間無料で試す<span class="arrow">→</span></a></div>
+      </div>
+
+      <div class="plan-card reveal d2">
+        <div class="head">
+          <div class="plan">PREMIUM</div>
+          <div class="plan-jp">プレミアム</div>
+          <div class="for">自校の様式に合わせ込みたい学校に</div>
+        </div>
+        <div class="price">¥34,800<small>/月</small></div>
+        <div class="per">全学年＋カスタマイズ・年間契約・税別</div>
+        <ul>
+          <li>スタンダードの全内容</li>
+          <li>自校様式へのカスタマイズ対応（承認書・名簿・帳票のレイアウト合わせ込み）</li>
+          <li>担当者向けオンライン研修（年2回・人事異動時の引き継ぎにも）</li>
+          <li>電話サポート・画面共有サポート</li>
+          <li>過年度データの移行支援</li>
+        </ul>
+        <div class="foot"><a class="btn btn-navy" href="mailto:info@cocorolab.co.jp?subject=%E3%80%90%E3%83%97%E3%83%AC%E3%83%9F%E3%82%A2%E3%83%A0%E3%80%91%E7%A9%8D%E7%AB%8B%E9%87%91%E4%BC%9A%E8%A8%88%20%E5%85%A5%E5%8A%9B%E3%82%A2%E3%82%B7%E3%82%B9%E3%82%BF%E3%83%B3%E3%83%88%20%E3%81%94%E7%9B%B8%E8%AB%87">相談する</a></div>
+      </div>
+
+    </div>
+
+    <ul class="pricing-notes reveal">
+      <li>※ 初期費用は全プラン0円。契約は年度単位（4月始まりでなくても可）で、学校の会計年度に合わせられます。</li>
+      <li>※ 無料トライアル30日間は全機能を利用可能。期間中の解約に費用は一切かかりません。</li>
+      <li>※ 年払い一括の場合は2ヶ月分割引（例：スタンダード 年237,600円 → <b>198,000円</b>）。請求書払い対応。</li>
+    </ul>
+
+    <div class="price-context reveal">
+      <strong>この価格の考え方</strong> ―
+      フル機能のクラウド校務支援システムの相場は1校あたり月2〜3万円、生徒単価型では1人あたり月300円（320名校なら月96,000円）です。
+      本製品は積立金会計に特化することで、スタンダードプランで<strong>生徒1人あたり月約62円</strong>（320名校）に抑えました。
+      毎月の入力・照合・転記にかかっていた事務時間を月5〜10時間削減できれば、人件費換算だけで月1〜2万円に相当します。
     </div>
   </div>
 </section>
@@ -851,8 +935,8 @@
         <div class="ans">Windows + Microsoft 365（または Excel 2019 以降）です。追加のソフトのインストールは不要です。</div>
       </details>
       <details class="faq">
-        <summary><span class="q-mark">Q</span>本当に無料ですか？<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></summary>
-        <div class="ans">無料です。生成スクリプト・VBAモジュール・手順書PDF・練習用ダミーファイルまで、すべてオープンソースとしてGitHubで公開しています。</div>
+        <summary><span class="q-mark">Q</span>料金はいくらですか？途中で解約できますか？<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></summary>
+        <div class="ans">初期費用0円、月額9,800円（ライト）／19,800円（スタンダード）／34,800円（プレミアム）の年間契約です。まず30日間の無料トライアルで全機能をお試しいただけます。トライアル期間中の解約は費用ゼロ、契約後も年度末での解約が可能です。請求書払いに対応しています。</div>
       </details>
     </div>
   </div>
@@ -862,10 +946,10 @@
 <section class="final">
   <div class="container">
     <h2>今年のクラス替えから、<br>間に合います。</h2>
-    <p>導入10分。まずは練習用ファイルで、320人分の入力が1クリックになる体験を。</p>
+    <p>初期費用0円・30日間の無料トライアル。まずは練習用ファイルで、320人分の入力が1クリックになる体験を。</p>
     <div class="cta-row">
-      <a class="btn btn-amber" href="https://github.com/mochamofu/School-SysteBalances">無料で導入する<span class="arrow">→</span></a>
-      <a class="btn btn-outline-light" href="https://github.com/mochamofu/School-SysteBalances/blob/main/docs/%E5%85%A5%E5%8A%9B%E3%82%A2%E3%82%B7%E3%82%B9%E3%82%BF%E3%83%B3%E3%83%88_%E6%89%8B%E9%A0%86%E6%9B%B8.pdf">手順書PDFを読む</a>
+      <a class="btn btn-amber" href="mailto:info@cocorolab.co.jp?subject=%E7%A9%8D%E7%AB%8B%E9%87%91%E4%BC%9A%E8%A8%88%20%E5%85%A5%E5%8A%9B%E3%82%A2%E3%82%B7%E3%82%B9%E3%82%BF%E3%83%B3%E3%83%88%20%E7%84%A1%E6%96%99%E3%83%88%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%AB%E7%94%B3%E8%BE%BC">30日間無料で試す<span class="arrow">→</span></a>
+      <a class="btn btn-outline-light" href="mailto:info@cocorolab.co.jp?subject=%E7%A9%8D%E7%AB%8B%E9%87%91%E4%BC%9A%E8%A8%88%20%E5%85%A5%E5%8A%9B%E3%82%A2%E3%82%B7%E3%82%B9%E3%82%BF%E3%83%B3%E3%83%88%20%E8%B3%87%E6%96%99%E8%AB%8B%E6%B1%82">資料請求・お問い合わせ</a>
     </div>
   </div>
 </section>
@@ -876,7 +960,7 @@
       <svg class="mark" viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="22" fill="#f5b731"/><path d="M28 54 L45 70 L74 32" fill="none" stroke="#12203d" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span>積立金会計 入力アシスタント ― 学校徴収金会計のための入力自動化パッケージ</span>
     </div>
-    <a href="https://github.com/mochamofu/School-SysteBalances">github.com/mochamofu/School-SysteBalances</a>
+    <a href="mailto:info@cocorolab.co.jp">お問い合わせ: info@cocorolab.co.jp</a>
   </div>
 </footer>
 
