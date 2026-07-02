@@ -1,0 +1,39 @@
+# site/ フォルダを GitHub Pages に自動公開するワークフロー
+#
+# 有効化の手順（1回だけ・無料）:
+#   GitHubリポジトリの Settings → Pages → Source を「GitHub Actions」にする
+#   → 以後、mainにpushするたびに自動で公開が更新される
+#   公開URL: https://mochamofu.github.io/School-SysteBalances/
+name: Deploy LP to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths: ['site/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true   # Pagesが未設定でも自動で有効化を試みる
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4
