@@ -40,7 +40,7 @@ Sub 精算書_行非表示()
     ' 支出明細の行範囲 (19行目から支出項目の数だけ)
     ' ※支出項目マスターに追加した場合はここの数値を変更してください
     Const EXPENSE_START_ROW As Long = 19  ' 支出の部の開始行
-    Const EXPENSE_END_ROW   As Long = 49  ' 支出の部の終了行（項目数+EXPENSE_START_ROW-1）
+    Const EXPENSE_END_ROW   As Long = 48  ' 支出の部の終了行（49行目は「支出合計」なので含めない）
 
     Dim r As Long
     Dim cellValue As Variant
@@ -83,7 +83,7 @@ Sub 精算書_行表示()
     Set ws = ThisWorkbook.Sheets("精算書(出力)")
 
     Const EXPENSE_START_ROW As Long = 19
-    Const EXPENSE_END_ROW   As Long = 49
+    Const EXPENSE_END_ROW   As Long = 48
 
     Dim r As Long
     For r = EXPENSE_START_ROW To EXPENSE_END_ROW
@@ -267,8 +267,9 @@ End Sub
 '
 '   【使い方】
 '   1. 番号紐付けテンプレート.xlsx の照合結果シートで全員「一致」を確認
-'   2. 照合結果シートのA列(氏名)・B列(新クラス)・D列(生徒番号)をコピーして
-'      このブックの「新クラス一時データ」シートに値貼り付け
+'   2. 照合結果シートのA列〜D列(4列まるごと・6行目から)をコピーして
+'      このブックの「新クラス一時データ」シートのA1に値貼り付け
+'      ※飛び飛びに3列だけコピーすると貼り付け時に列が詰まってズレるため必ず4列で
 '   3. このマクロを実行
 ' ----------------------------------------------------------------
 Sub 個人別管理表_クラス更新()
@@ -281,8 +282,8 @@ Sub 個人別管理表_クラス更新()
 
     If wsTmp Is Nothing Then
         MsgBox "「新クラス一時データ」シートが見つかりません。" & vbCrLf & _
-               "シートを作成して、照合結果の" & vbCrLf & _
-               "A列(氏名)、B列(新クラス)、D列(生徒番号)を貼り付けてから実行してください。", _
+               "シートを作成して、照合結果のA列〜D列(4列まるごと)を" & vbCrLf & _
+               "貼り付けてから実行してください。", _
                vbExclamation
         Exit Sub
     End If
@@ -298,7 +299,7 @@ Sub 個人別管理表_クラス更新()
     Dim notFoundList As String
 
     Dim r As Long
-    For r = 2 To lastRowTmp  ' 1行目はヘッダー想定
+    For r = 1 To lastRowTmp  ' ヘッダー行が混ざっていても生徒番号が数字でないため自動で飛ばされる
         Dim newClass   As String
         Dim studentID  As String
 
