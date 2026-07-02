@@ -5,41 +5,42 @@
 
 ## 公開にお金はかかる？
 
-**基本は0円です。** 静的サイト（HTMLだけのサイト）の公開は、主要サービスすべてに無料枠があります。
+**0円で公開できます。** 静的サイト（HTMLだけのサイト）の公開は、主要サービスに無料枠があります。
+ただし**このリポジトリはプライベートなので、GitHub Pagesだけは無料プランでは使えません**
+（Pagesが無料なのはパブリックリポジトリのみ。プライベートで使うにはGitHub Pro＝月約4ドルが必要）。
 
-| 方法 | 費用 | 手間 | URL |
+| 方法 | 費用 | プライベートリポジトリのまま使える？ | URL |
 |---|---|---|---|
-| **GitHub Pages**（設定済み・おすすめ） | 無料 | 設定1回 | `https://mochamofu.github.io/School-SysteBalances/` |
-| **Netlify Drop** | 無料 | ドラッグ&ドロップだけ | `https://好きな名前.netlify.app` |
-| **Cloudflare Pages** | 無料 | GitHub連携で自動 | `https://好きな名前.pages.dev` |
+| **Netlify Drop**（一番手軽・おすすめ） | 無料 | ○（リポジトリ連携すら不要） | `https://好きな名前.netlify.app` |
+| **Cloudflare Pages** | 無料 | ○（プライベート連携OK） | `https://好きな名前.pages.dev` |
+| GitHub Pages | 無料はパブリックのみ | ×（Pro加入 or 公開が必要） | `https://mochamofu.github.io/School-SysteBalances/` |
 
 お金がかかるのは、**独自ドメイン**（例: `tsumitate-assistant.jp`）を使いたい場合だけです。
-これはどのサービスを使っても共通で、ドメイン代として**年1,000〜2,000円程度**（お名前.com、Cloudflare Registrar等）。
-上記の `~.github.io` / `~.netlify.app` などのURLのままなら完全無料です。
+これはどのサービスでも共通で、ドメイン代として**年1,000〜2,000円程度**（お名前.com、Cloudflare Registrar等）。
+`~.netlify.app` / `~.pages.dev` などのURLのままなら完全無料です。
 
 ## 公開手順
 
-### A. GitHub Pages（このリポジトリだけで完結・おすすめ）
+### A. Netlify Drop（2分で完了・おすすめ）
 
-デプロイ用ワークフロー（`.github/workflows/deploy-pages.yml`）は設定済みです。あとは1回だけ:
-
-1. GitHubリポジトリの **Settings → Pages** を開く
-2. **Source** を **「GitHub Actions」** に変更する
-
-これだけで `https://mochamofu.github.io/School-SysteBalances/` に公開され、
-以後 `site/` を更新してmainにpushするたびに自動で反映されます。
-
-### B. Netlify Drop（アカウント登録すら最小限・一番手軽）
-
-1. https://app.netlify.com/drop を開く
-2. `site` フォルダをブラウザにドラッグ&ドロップ
+1. https://app.netlify.com/drop を開く（無料アカウント登録）
+2. この `site` フォルダをブラウザにドラッグ&ドロップ
 3. その場でURLが発行される（サイト名は後から変更可）
 
-### C. Cloudflare Pages
+リポジトリはプライベートのまま、LPだけが公開されます。更新したいときは同じ場所にもう一度ドロップするだけ。
 
-1. https://pages.cloudflare.com でGitHubリポジトリを連携
-2. Build command: なし ／ Output directory: `site`
-3. 自動でビルド・公開される
+### B. Cloudflare Pages（自動更新にしたい場合）
+
+1. https://pages.cloudflare.com でGitHubアカウントを連携（プライベートリポジトリのままでOK）
+2. このリポジトリを選び、Build command: なし ／ Build output directory: `site`
+3. 以後、mainにpushするたびに自動で公開が更新される
+
+### C. GitHub Pages（GitHub Proに加入している／リポジトリを公開してよい場合のみ）
+
+1. Settings → Pages → Source を「GitHub Actions」にする
+2. Actions タブ →「Deploy LP to GitHub Pages」→ Run workflow
+
+※無料プラン＋プライベートリポジトリの組み合わせでは失敗します（このため自動実行はオフにしてあります）。
 
 ## 内容を直したいとき
 
