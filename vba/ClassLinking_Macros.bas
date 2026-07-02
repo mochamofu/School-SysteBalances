@@ -55,15 +55,15 @@ Sub 照合_一括実行()
     ' 結果レポート
     Dim msg As String
     msg = "照合結果の集計" & vbCrLf & vbCrLf & _
-          "  ✅ 一致        : " & countMatch & " 名" & vbCrLf & _
-          "  ⚠️ 氏名不一致  : " & countMismatch & " 名" & vbCrLf & _
-          "  ❌ 未マッチ    : " & countNotFound & " 名" & vbCrLf & vbCrLf
+          "  【一致】        " & countMatch & " 名" & vbCrLf & _
+          "  【氏名不一致】  " & countMismatch & " 名" & vbCrLf & _
+          "  【未マッチ】    " & countNotFound & " 名" & vbCrLf & vbCrLf
 
     If countMismatch > 0 Or countNotFound > 0 Then
-        msg = msg & "⚠️ 要確認の生徒がいます。照合結果シートで" & vbCrLf & _
+        msg = msg & "※ 要確認の生徒がいます。照合結果シートで" & vbCrLf & _
               "黄色・赤色の行を確認してください。"
     Else
-        msg = msg & "✅ 全員一致しました！生徒マスターへの転記が可能です。"
+        msg = msg & "全員一致しました。生徒マスターへの転記が可能です。"
     End If
 
     MsgBox msg, vbInformation, "照合完了"
@@ -161,7 +161,8 @@ Sub 結果_マスター転記()
 
             Dim mr As Long
             For mr = 4 To masterLastRow
-                If Trim(CStr(wsMaster.Cells(mr, "A").Value)) = studentID Then
+                ' 生徒マスターはA列=No.、B列=生徒番号なのでB列で探す
+                If Trim(CStr(wsMaster.Cells(mr, "B").Value)) = studentID Then
                     wsMaster.Cells(mr, classCol).Value = newClass
                     wsMaster.Cells(mr, numCol).Value   = newNum
                     updateCount = updateCount + 1
