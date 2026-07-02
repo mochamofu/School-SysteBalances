@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>積立金会計 入力アシスタント｜320人分の入力を、1クリックに。</title>
+<meta name="description" content="学校徴収金（積立金）会計のExcelマスターをそのまま使える入力自動化パッケージ。クラス替え名簿の取込、支出・収入の一括入力、承認書の自動作成、決算集計までボタン操作だけ。無料・オープンソース。">
+<meta property="og:title" content="積立金会計 入力アシスタント">
+<meta property="og:description" content="320人分の入力を、1クリックに。学校徴収金会計のための入力自動化パッケージ。">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Inter:wght@600;800&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231b2f56'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='%23f5b731' font-family='sans-serif' font-weight='bold'>積</text></svg>">
+<style>
+  :root {
+    --navy-950: #0d1830;
+    --navy-900: #12203d;
+    --navy-800: #1b2f56;
+    --navy-700: #24407a;
+    --blue-600: #2f5fa8;
+    --blue-500: #4a7fd4;
+    --blue-400: #6f9ce4;
+    --sky-100: #eaf1fb;
+    --sky-50:  #f5f8fd;
+    --amber-500: #f5b731;
+    --amber-600: #e09f10;
+    --green-600: #1e8e3e;
+    --green-50: #e9f7ee;
+    --red-600: #c0392b;
+    --red-50: #fdeeec;
+    --ink-900: #1f2733;
+    --ink-600: #59657a;
+    --ink-400: #8b95a7;
+    --line-200: #e2e8f2;
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --shadow-sm: 0 2px 8px rgba(18, 32, 61, .06);
+    --shadow-md: 0 8px 30px rgba(18, 32, 61, .10);
+    --shadow-lg: 0 24px 60px rgba(18, 32, 61, .18);
+    --font-jp: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", Meiryo, sans-serif;
+    --font-num: "Inter", "Noto Sans JP", sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+  body {
+    font-family: var(--font-jp);
+    color: var(--ink-900);
+    line-height: 1.9;
+    background: #fff;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  img, svg { display: block; max-width: 100%; }
+  a { color: inherit; }
+  .container { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+  .narrow { max-width: 860px; }
+  section { padding: 104px 0; position: relative; }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-num);
+    font-size: 12.5px; font-weight: 800; letter-spacing: .22em;
+    color: var(--blue-500); text-transform: uppercase; margin-bottom: 14px;
+  }
+  .eyebrow::before { content: ""; width: 26px; height: 2px; background: var(--amber-500); }
+  h2.section-title {
+    font-size: clamp(28px, 4vw, 40px); font-weight: 900; line-height: 1.45;
+    color: var(--navy-800); letter-spacing: .02em; margin-bottom: 16px;
+  }
+  .section-lead { color: var(--ink-600); font-size: 16px; max-width: 640px; margin-bottom: 56px; }
+  .center { text-align: center; }
+  .center .section-lead { margin-left: auto; margin-right: auto; }
+  .center .eyebrow::before { display: none; }
+  .center .eyebrow::after { content: ""; width: 26px; height: 2px; background: var(--amber-500); }
+  .center .eyebrow { justify-content: center; }
+  .center .eyebrow::before { display: inline-block; }
+
+  /* ---------- reveal animation ---------- */
+  .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+  .reveal.d1 { transition-delay: .08s; } .reveal.d2 { transition-delay: .16s; }
+  .reveal.d3 { transition-delay: .24s; } .reveal.d4 { transition-delay: .32s; }
+
+  /* ---------- buttons ---------- */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    text-decoration: none; font-weight: 700; border-radius: 12px;
+    padding: 16px 34px; font-size: 15.5px; letter-spacing: .02em;
+    transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+    cursor: pointer; border: none;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-amber { background: var(--amber-500); color: var(--navy-950); box-shadow: 0 6px 20px rgba(245,183,49,.35); }
+  .btn-amber:hover { background: #ffc84a; box-shadow: 0 10px 28px rgba(245,183,49,.45); }
+  .btn-outline-light { background: rgba(255,255,255,.06); color: #fff; border: 1.5px solid rgba(255,255,255,.45); backdrop-filter: blur(4px); }
+  .btn-outline-light:hover { background: rgba(255,255,255,.14); }
+  .btn-navy { background: var(--navy-800); color: #fff; box-shadow: var(--shadow-md); }
+  .btn-navy:hover { background: var(--navy-700); }
+  .btn .arrow { transition: transform .18s ease; }
+  .btn:hover .arrow { transform: translateX(4px); }
+
+  /* ---------- nav ---------- */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    transition: background .25s ease, box-shadow .25s ease, padding .25s ease;
+    padding: 18px 0;
+  }
+  .nav.scrolled { background: rgba(255,255,255,.92); backdrop-filter: blur(12px); box-shadow: var(--shadow-sm); padding: 10px 0; }
+  .nav .inner { display: flex; align-items: center; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; }
+  .brand .mark { width: 38px; height: 38px; border-radius: 10px; flex: none; }
+  .brand .name { font-weight: 900; font-size: 16px; letter-spacing: .04em; color: #fff; transition: color .25s ease; line-height: 1.3; }
+  .brand .name small { display: block; font-size: 10px; font-weight: 500; letter-spacing: .14em; opacity: .75; }
+  .nav.scrolled .brand .name { color: var(--navy-800); }
+  .nav-links { display: flex; align-items: center; gap: 30px; list-style: none; }
+  .nav-links a { text-decoration: none; font-size: 14px; font-weight: 500; color: rgba(255,255,255,.85); transition: color .2s ease; }
+  .nav.scrolled .nav-links a { color: var(--ink-600); }
+  .nav-links a:hover { color: var(--amber-500); }
+  .nav-cta {
+    text-decoration: none; font-size: 13.5px; font-weight: 700;
+    background: var(--amber-500); color: var(--navy-950);
+    padding: 10px 22px; border-radius: 10px; transition: background .2s ease;
+  }
+  .nav-cta:hover { background: #ffc84a; }
+  @media (max-width: 900px) { .nav-links { display: none; } }
+
+  /* ---------- hero ---------- */
+  .hero {
+    position: relative; color: #fff; overflow: hidden;
+    background:
+      radial-gradient(1100px 520px at 88% -10%, rgba(74,127,212,.45), transparent 60%),
+      radial-gradient(800px 500px at -10% 110%, rgba(47,95,168,.5), transparent 60%),
+      linear-gradient(160deg, var(--navy-950) 0%, var(--navy-900) 45%, var(--navy-800) 100%);
+    padding: 168px 0 120px;
+  }
+  .hero::before {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(900px 600px at 30% 20%, #000 30%, transparent 75%);
+  }
+  .hero .inner { position: relative; display: grid; grid-template-columns: 1.05fr .95fr; gap: 56px; align-items: center; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 9px;
+    background: rgba(255,255,255,.09); border: 1px solid rgba(255,255,255,.22);
+    border-radius: 999px; padding: 7px 18px 7px 9px; font-size: 12.5px; margin-bottom: 30px;
+    letter-spacing: .04em;
+  }
+  .hero-badge .dot { background: var(--amber-500); color: var(--navy-950); font-weight: 800; font-size: 10.5px; border-radius: 999px; padding: 2px 10px; }
+  .hero h1 { font-size: clamp(38px, 5vw, 58px); font-weight: 900; line-height: 1.32; letter-spacing: .02em; margin-bottom: 24px; }
+  .hero h1 .amber { color: var(--amber-500); position: relative; white-space: nowrap; }
+  .hero h1 .amber::after { content: ""; position: absolute; left: 0; right: 0; bottom: 6px; height: 10px; background: rgba(245,183,49,.22); border-radius: 4px; z-index: -1; }
+  .hero p.sub { font-size: 16.5px; line-height: 2.05; color: rgba(255,255,255,.82); margin-bottom: 40px; max-width: 520px; }
+  .hero p.sub strong { color: #fff; }
+  .hero .cta-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 30px; }
+  .hero .note { font-size: 12.5px; color: rgba(255,255,255,.55); }
+
+  /* hero mockup */
+  .mockup-wrap { position: relative; }
+  .mockup-wrap .glow {
+    position: absolute; inset: -8% -6%;
+    background: radial-gradient(closest-side, rgba(245,183,49,.16), transparent 70%);
+    filter: blur(10px);
+  }
+  .mockup { position: relative; border-radius: 18px; box-shadow: var(--shadow-lg); }
+  .float-chip {
+    position: absolute; background: #fff; color: var(--ink-900);
+    border-radius: 12px; box-shadow: var(--shadow-lg);
+    padding: 12px 18px; font-size: 12.5px; font-weight: 700; line-height: 1.5;
+    display: flex; align-items: center; gap: 10px;
+    animation: floaty 5s ease-in-out infinite;
+  }
+  .float-chip .ic { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex: none; font-size: 15px; }
+  .float-chip small { display: block; font-weight: 500; color: var(--ink-600); font-size: 11px; }
+  .chip-1 { top: -22px; right: -10px; animation-delay: .6s; }
+  .chip-2 { bottom: -20px; left: -14px; }
+  @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+
+  /* ---------- stats band ---------- */
+  .stats-band { background: var(--navy-950); color: #fff; padding: 0; }
+  .stats-band .inner {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    border-left: 1px solid rgba(255,255,255,.1);
+  }
+  .stat-cell { padding: 44px 34px; border-right: 1px solid rgba(255,255,255,.1); }
+  .stat-cell .num { font-family: var(--font-num); font-size: 42px; font-weight: 800; color: var(--amber-500); line-height: 1.15; letter-spacing: -.01em; }
+  .stat-cell .num small { font-size: 20px; font-weight: 700; }
+  .stat-cell .label { font-size: 12.5px; color: rgba(255,255,255,.62); margin-top: 8px; line-height: 1.7; }
+
+  /* ---------- pain ---------- */
+  .pain { background: var(--sky-50); }
+  .ba-grid { display: grid; grid-template-columns: 1fr 64px 1fr; align-items: stretch; }
+  .ba-card { background: #fff; border-radius: var(--radius-lg); padding: 38px 36px; box-shadow: var(--shadow-sm); border: 1px solid var(--line-200); }
+  .ba-card.before { border-top: 4px solid var(--red-600); }
+  .ba-card.after { border-top: 4px solid var(--green-600); box-shadow: var(--shadow-md); }
+  .ba-card h3 { font-size: 15px; letter-spacing: .1em; margin-bottom: 22px; display: flex; align-items: center; gap: 10px; }
+  .ba-card.before h3 { color: var(--red-600); }
+  .ba-card.after h3 { color: var(--green-600); }
+  .ba-card h3 .pill { font-size: 11px; border-radius: 999px; padding: 3px 12px; font-weight: 700; letter-spacing: .06em; }
+  .ba-card.before h3 .pill { background: var(--red-50); }
+  .ba-card.after h3 .pill { background: var(--green-50); }
+  .ba-card ul { list-style: none; }
+  .ba-card li { display: flex; gap: 12px; padding: 12px 0; font-size: 14px; line-height: 1.75; border-bottom: 1px dashed var(--line-200); }
+  .ba-card li:last-child { border-bottom: none; }
+  .ba-card li .mk { flex: none; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; margin-top: 4px; }
+  .ba-card.before li .mk { background: var(--red-50); color: var(--red-600); }
+  .ba-card.after li .mk { background: var(--green-50); color: var(--green-600); }
+  .ba-card.after li strong { color: var(--navy-800); }
+  .ba-arrow { display: flex; align-items: center; justify-content: center; }
+  .ba-arrow .circle {
+    width: 46px; height: 46px; border-radius: 50%; background: var(--navy-800); color: var(--amber-500);
+    display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; box-shadow: var(--shadow-md);
+  }
+
+  /* ---------- features ---------- */
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  .feature {
+    background: #fff; border: 1px solid var(--line-200); border-radius: var(--radius-lg);
+    padding: 34px 30px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .feature:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); border-color: var(--blue-400); }
+  .feature::after {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--blue-500), var(--amber-500));
+    opacity: 0; transition: opacity .2s ease;
+  }
+  .feature:hover::after { opacity: 1; }
+  .feature .icon { width: 56px; height: 56px; border-radius: 14px; background: var(--sky-100); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+  .feature .icon svg { width: 28px; height: 28px; stroke: var(--blue-600); }
+  .feature .when { font-family: var(--font-num); display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .12em; color: var(--blue-500); background: var(--sky-100); border-radius: 999px; padding: 3px 12px; margin-bottom: 12px; }
+  .feature h3 { font-size: 17.5px; font-weight: 700; color: var(--navy-800); margin-bottom: 10px; letter-spacing: .02em; }
+  .feature p { font-size: 13.8px; color: var(--ink-600); line-height: 1.85; }
+
+  /* ---------- tour ---------- */
+  .tour { background: var(--sky-50); }
+  .tour-row { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; margin-bottom: 96px; }
+  .tour-row:last-child { margin-bottom: 0; }
+  .tour-row.flip .tour-text { order: 2; }
+  .tour-row.flip .tour-visual { order: 1; }
+  .tour-num { font-family: var(--font-num); font-size: 13px; font-weight: 800; color: var(--amber-600); letter-spacing: .2em; margin-bottom: 10px; }
+  .tour-text h3 { font-size: 26px; font-weight: 900; color: var(--navy-800); line-height: 1.5; margin-bottom: 16px; }
+  .tour-text p { font-size: 14.5px; color: var(--ink-600); margin-bottom: 18px; }
+  .tour-text ul { list-style: none; }
+  .tour-text li { display: flex; gap: 10px; font-size: 14px; padding: 7px 0; color: var(--ink-900); }
+  .tour-text li::before { content: "✓"; color: var(--green-600); font-weight: 800; flex: none; }
+  .tour-visual { border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg); border: 1px solid var(--line-200); background: #fff; }
+  .tour-visual svg { width: 100%; height: auto; }
+
+  /* ---------- steps ---------- */
+  .steps { background: linear-gradient(160deg, var(--navy-900), var(--navy-800)); color: #fff; overflow: hidden; }
+  .steps .eyebrow { color: var(--amber-500); }
+  .steps h2.section-title { color: #fff; }
+  .steps .section-lead { color: rgba(255,255,255,.7); }
+  .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; position: relative; counter-reset: step; }
+  .step-card { padding: 38px 34px; border-left: 1px solid rgba(255,255,255,.14); position: relative; }
+  .step-card:last-child { border-right: 1px solid rgba(255,255,255,.14); }
+  .step-card .no {
+    font-family: var(--font-num); font-size: 52px; font-weight: 800;
+    color: transparent; -webkit-text-stroke: 1.5px rgba(245,183,49,.85);
+    line-height: 1; margin-bottom: 20px;
+  }
+  .step-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+  .step-card p { font-size: 13.5px; color: rgba(255,255,255,.72); }
+  .step-card .time { display: inline-block; margin-top: 16px; font-family: var(--font-num); font-size: 11.5px; font-weight: 700; letter-spacing: .1em; color: var(--amber-500); border: 1px solid rgba(245,183,49,.5); border-radius: 999px; padding: 3px 14px; }
+
+  /* ---------- safety ---------- */
+  .safety-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .safety-card {
+    display: flex; gap: 20px; background: #fff; border: 1px solid var(--line-200);
+    border-radius: var(--radius-md); padding: 28px 28px; box-shadow: var(--shadow-sm);
+  }
+  .safety-card .ic { flex: none; width: 50px; height: 50px; border-radius: 12px; background: var(--green-50); display: flex; align-items: center; justify-content: center; }
+  .safety-card .ic svg { width: 26px; height: 26px; stroke: var(--green-600); }
+  .safety-card h3 { font-size: 16px; font-weight: 700; color: var(--navy-800); margin-bottom: 6px; }
+  .safety-card p { font-size: 13.5px; color: var(--ink-600); }
+
+  /* ---------- proof ---------- */
+  .proof { background: var(--sky-50); }
+  .proof-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+  .proof-list { list-style: none; }
+  .proof-list li { display: flex; gap: 14px; padding: 13px 0; border-bottom: 1px dashed var(--line-200); font-size: 14.5px; }
+  .proof-list li:last-child { border-bottom: none; }
+  .proof-list .mk { flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--green-600); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; margin-top: 4px; }
+  .proof-note { font-size: 12.5px; color: var(--ink-400); margin-top: 18px; }
+  .proof-visual { background: var(--navy-900); border-radius: var(--radius-lg); padding: 34px 32px; color: #dbe7f7; font-family: "SFMono-Regular", Consolas, "Noto Sans JP", monospace; font-size: 13px; line-height: 2.1; box-shadow: var(--shadow-lg); }
+  .proof-visual .t-bar { display: flex; gap: 7px; margin-bottom: 18px; }
+  .proof-visual .t-bar i { width: 11px; height: 11px; border-radius: 50%; background: #ff5f57; }
+  .proof-visual .t-bar i:nth-child(2) { background: #febc2e; }
+  .proof-visual .t-bar i:nth-child(3) { background: #28c840; }
+  .proof-visual .ok { color: #4cd964; }
+  .proof-visual .dim { color: #7d8fad; }
+
+  /* ---------- pricing ---------- */
+  .pricing-card {
+    max-width: 620px; margin: 0 auto; background: #fff; border-radius: var(--radius-lg);
+    border: 1px solid var(--line-200); box-shadow: var(--shadow-md); overflow: hidden; text-align: center;
+  }
+  .pricing-card .head { background: linear-gradient(135deg, var(--navy-800), var(--blue-600)); color: #fff; padding: 30px; }
+  .pricing-card .head .plan { font-size: 13px; font-weight: 700; letter-spacing: .2em; opacity: .85; }
+  .pricing-card .price { font-family: var(--font-num); font-size: 72px; font-weight: 800; color: var(--navy-800); line-height: 1.1; padding: 34px 0 4px; }
+  .pricing-card .price small { font-size: 22px; font-weight: 700; }
+  .pricing-card .per { color: var(--ink-400); font-size: 13px; margin-bottom: 26px; }
+  .pricing-card ul { list-style: none; text-align: left; max-width: 400px; margin: 0 auto 30px; }
+  .pricing-card li { display: flex; gap: 10px; padding: 8px 0; font-size: 14px; }
+  .pricing-card li::before { content: "✓"; color: var(--green-600); font-weight: 800; }
+  .pricing-card .foot { padding: 0 30px 38px; }
+  .pricing-card .fine { font-size: 12px; color: var(--ink-400); margin-top: 14px; }
+
+  /* ---------- faq ---------- */
+  .faq-list { max-width: 820px; margin: 0 auto; }
+  details.faq {
+    background: #fff; border: 1px solid var(--line-200); border-radius: var(--radius-md);
+    margin-bottom: 14px; box-shadow: var(--shadow-sm); overflow: hidden;
+  }
+  details.faq summary {
+    list-style: none; cursor: pointer; display: flex; align-items: center; gap: 16px;
+    padding: 22px 26px; font-weight: 700; font-size: 15px; color: var(--navy-800);
+    transition: background .15s ease;
+  }
+  details.faq summary::-webkit-details-marker { display: none; }
+  details.faq summary:hover { background: var(--sky-50); }
+  details.faq summary .q-mark { flex: none; width: 30px; height: 30px; border-radius: 8px; background: var(--sky-100); color: var(--blue-600); font-family: var(--font-num); font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  details.faq summary .chev { margin-left: auto; transition: transform .25s ease; color: var(--ink-400); flex: none; }
+  details.faq[open] summary .chev { transform: rotate(180deg); }
+  details.faq .ans { padding: 0 26px 24px 72px; font-size: 14px; color: var(--ink-600); }
+
+  /* ---------- final cta ---------- */
+  .final {
+    position: relative; color: #fff; text-align: center; overflow: hidden;
+    background:
+      radial-gradient(700px 400px at 50% -20%, rgba(74,127,212,.5), transparent 65%),
+      linear-gradient(160deg, var(--navy-950), var(--navy-800));
+    padding: 120px 0;
+  }
+  .final::before {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(700px 420px at 50% 40%, #000 30%, transparent 75%);
+  }
+  .final .container { position: relative; }
+  .final h2 { font-size: clamp(30px, 4.4vw, 46px); font-weight: 900; line-height: 1.5; margin-bottom: 18px; }
+  .final p { color: rgba(255,255,255,.78); margin-bottom: 42px; font-size: 16px; }
+  .final .cta-row { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+  footer { background: var(--navy-950); color: rgba(255,255,255,.55); padding: 44px 0; font-size: 12.5px; }
+  footer .inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+  footer .brand-line { display: flex; align-items: center; gap: 10px; }
+  footer .mark { width: 28px; height: 28px; border-radius: 7px; }
+  footer a { color: rgba(255,255,255,.75); text-decoration: none; }
+  footer a:hover { color: var(--amber-500); }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 980px) {
+    section { padding: 76px 0; }
+    .hero { padding: 130px 0 90px; }
+    .hero .inner { grid-template-columns: 1fr; gap: 60px; }
+    .hero p.sub { max-width: none; }
+    .stats-band .inner { grid-template-columns: repeat(2, 1fr); }
+    .stat-cell { border-bottom: 1px solid rgba(255,255,255,.1); }
+    .ba-grid { grid-template-columns: 1fr; gap: 0; }
+    .ba-arrow { padding: 18px 0; }
+    .ba-arrow .circle { transform: rotate(90deg); }
+    .features-grid { grid-template-columns: 1fr; }
+    .tour-row { grid-template-columns: 1fr; gap: 30px; margin-bottom: 72px; }
+    .tour-row.flip .tour-text { order: 1; }
+    .tour-row.flip .tour-visual { order: 2; }
+    .steps-grid { grid-template-columns: 1fr; }
+    .step-card { border-left: none; border-top: 1px solid rgba(255,255,255,.14); }
+    .step-card:last-child { border-right: none; border-bottom: 1px solid rgba(255,255,255,.14); }
+    .safety-grid { grid-template-columns: 1fr; }
+    .proof-grid { grid-template-columns: 1fr; }
+    .float-chip { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================ nav -->
+<nav class="nav" id="nav">
+  <div class="container inner">
+    <a class="brand" href="#top">
+      <svg class="mark" viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="22" fill="#f5b731"/><path d="M28 54 L45 70 L74 32" fill="none" stroke="#12203d" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="name">積立金会計 入力アシスタント<small>TSUMITATE INPUT ASSISTANT</small></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#pain">課題</a></li>
+      <li><a href="#features">機能</a></li>
+      <li><a href="#tour">画面</a></li>
+      <li><a href="#steps">導入</a></li>
+      <li><a href="#pricing">料金</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <a class="nav-cta" href="https://github.com/mochamofu/School-SysteBalances">無料で導入</a>
+  </div>
+</nav>
+
+<!-- ============================================================ hero -->
+<header class="hero" id="top">
+  <div class="container inner">
+    <div>
+      <span class="hero-badge"><span class="dot">NEW</span>実物の積立金マスターにそのまま使える・無料</span>
+      <h1>320人分の入力を、<br><span class="amber">1クリック</span>に。</h1>
+      <p class="sub">
+        クラス替え、支出、口座振替、承認書、決算 ——
+        学校徴収金（積立金）会計の入力作業を、<strong>いまのExcelマスターを1ミリも変えずに</strong>自動化する、
+        経営企画室のためのアシスタントです。
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-amber" href="https://github.com/mochamofu/School-SysteBalances">無料で導入する<span class="arrow">→</span></a>
+        <a class="btn btn-outline-light" href="#tour">画面を見る</a>
+      </div>
+      <p class="note">Windows + Microsoft 365 / Excel 2019以降 ・ インターネット接続不要 ・ データは校内から出ません</p>
+    </div>
+
+    <div class="mockup-wrap">
+      <div class="glow"></div>
+      <!-- product mockup: assistant menu window -->
+      <svg class="mockup" viewBox="0 0 560 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="入力アシスタントのメニュー画面イメージ">
+        <defs>
+          <linearGradient id="mghead" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#1b2f56"/><stop offset="1" stop-color="#2f5fa8"/>
+          </linearGradient>
+        </defs>
+        <rect width="560" height="420" rx="16" fill="#f4f7fc"/>
+        <rect width="560" height="46" rx="16" fill="url(#mghead)"/>
+        <rect y="24" width="560" height="22" fill="url(#mghead)"/>
+        <circle cx="26" cy="23" r="6" fill="#ff5f57"/><circle cx="48" cy="23" r="6" fill="#febc2e"/><circle cx="70" cy="23" r="6" fill="#28c840"/>
+        <text x="100" y="29" font-family="Noto Sans JP, sans-serif" font-size="14" fill="#ffffff" font-weight="700">積立金入力アシスタント.xlsm ― メニュー</text>
+
+        <text x="32" y="86" font-family="Noto Sans JP, sans-serif" font-size="13" fill="#59657a" font-weight="700">◆ 名簿・クラス替え</text>
+        <g font-family="Noto Sans JP, sans-serif" font-size="12.5" font-weight="700">
+          <rect x="32" y="98" width="228" height="42" rx="9" fill="#ffffff" stroke="#d5deed"/><text x="48" y="124" fill="#1b2f56">① 名簿を解析して照合する</text>
+          <rect x="32" y="148" width="228" height="42" rx="9" fill="#ffffff" stroke="#d5deed"/><text x="48" y="174" fill="#1b2f56">② クラス替えを反映する</text>
+          <rect x="32" y="198" width="228" height="42" rx="9" fill="#ffffff" stroke="#d5deed"/><text x="48" y="224" fill="#1b2f56">③ 新入生として登録する</text>
+
+          <text x="300" y="86" font-size="13" fill="#59657a">◆ 日々の入力</text>
+          <rect x="300" y="98" width="228" height="42" rx="9" fill="#f5b731"/><text x="316" y="124" fill="#12203d">④ 支出を一括入力</text>
+          <rect x="300" y="148" width="228" height="42" rx="9" fill="#ffffff" stroke="#d5deed"/><text x="316" y="174" fill="#1b2f56">⑤ 収入を一括入力</text>
+          <rect x="300" y="198" width="228" height="42" rx="9" fill="#ffffff" stroke="#d5deed"/><text x="316" y="224" fill="#1b2f56">⑥ 収入枠の一覧を表示</text>
+
+          <text x="32" y="272" font-size="13" fill="#59657a">◆ 年度末・点検</text>
+          <rect x="32" y="284" width="160" height="42" rx="9" fill="#ffffff" stroke="#d5deed"/><text x="46" y="310" fill="#1b2f56">⑦ 決算集計</text>
+          <rect x="200" y="284" width="160" height="42" rx="9" fill="#ffffff" stroke="#d5deed"/><text x="214" y="310" fill="#1b2f56">⑧ 整合性チェック</text>
+          <rect x="368" y="284" width="160" height="42" rx="9" fill="#ffffff" stroke="#d5deed"/><text x="382" y="310" fill="#1b2f56">⑨ 精算書一括PDF</text>
+        </g>
+        <rect x="32" y="352" width="496" height="42" rx="9" fill="#e9f7ee"/>
+        <text x="48" y="378" font-family="Noto Sans JP, sans-serif" font-size="12" fill="#1e8e3e" font-weight="700">✓ 支出No.30「校外学習 しおり印刷代」 対象314名・合計161,460円 を書き込みました</text>
+        <!-- cursor -->
+        <g transform="translate(400 116)"><path d="M0 0 L0 19 L5.2 14.6 L8.6 22.4 L12 20.8 L8.6 13 L15.5 13 Z" fill="#12203d" stroke="#fff" stroke-width="1.4"/></g>
+      </svg>
+
+      <div class="float-chip chip-1">
+        <span class="ic" style="background:var(--green-50);">🛡️</span>
+        <span>自動バックアップ済み<small>20260702_0930_令和7年度生積立金.xlsx</small></span>
+      </div>
+      <div class="float-chip chip-2">
+        <span class="ic" style="background:var(--sky-100);">⚡</span>
+        <span>314名分を一括入力<small>所要時間 約3秒</small></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================ stats -->
+<div class="stats-band">
+  <div class="container inner">
+    <div class="stat-cell reveal"><div class="num">1<small>/320</small></div><div class="label">支出1件あたりの入力操作。従来は生徒ごとに約320回の入力が必要でした</div></div>
+    <div class="stat-cell reveal d1"><div class="num">10<small>分</small></div><div class="label">導入にかかる時間。マクロのインポートと初期設定だけ（初回のみ）</div></div>
+    <div class="stat-cell reveal d2"><div class="num">100<small>%</small></div><div class="label">書き込み前の自動バックアップ実施率。失敗してもいつでも戻せます</div></div>
+    <div class="stat-cell reveal d3"><div class="num">¥0</div><div class="label">導入・利用ともに無料。オープンソースとして全コードを公開しています</div></div>
+  </div>
+</div>
+
+<!-- ============================================================ pain -->
+<section class="pain" id="pain">
+  <div class="container">
+    <div class="center">
+      <span class="eyebrow">Before / After</span>
+      <h2 class="section-title">その入力作業、まだ手でやりますか？</h2>
+      <p class="section-lead">現場ヒアリングで挙がった「つらい作業」が、導入後はこう変わります。</p>
+    </div>
+    <div class="ba-grid">
+      <div class="ba-card before reveal">
+        <h3><span class="pill">BEFORE</span>これまでの毎日</h3>
+        <ul>
+          <li><span class="mk">×</span>クラス替えのたび、掲示名簿を見ながら320人分の組・番号を1行ずつ修正</li>
+          <li><span class="mk">×</span>支出のたび、同じ金額を315人分入力して、転退学・給付型・欠席を1人ずつ直す</li>
+          <li><span class="mk">×</span>口座振替の結果を見ながら、入金できた生徒へ1人ずつ金額を入力</li>
+          <li><span class="mk">×</span>支出承認書・収入承認書に同じ情報をもう一度手書き</li>
+          <li><span class="mk">×</span>年度末は電卓で項目ごとの合計を出して決算書に直打ち</li>
+        </ul>
+      </div>
+      <div class="ba-arrow reveal d1"><span class="circle">→</span></div>
+      <div class="ba-card after reveal d2">
+        <h3><span class="pill">AFTER</span>導入後の毎日</h3>
+        <ul>
+          <li><span class="mk">✓</span>名簿を貼り付けて<strong>2クリック</strong>。氏名で自動照合、同姓同名だけ確認</li>
+          <li><span class="mk">✓</span>件名と一人あたり金額を入れ、例外の生徒だけ表に書いて<strong>1クリック</strong></li>
+          <li><span class="mk">✓</span><strong>未納者の番号だけ</strong>書けば、残り全員に自動で金額が入る</li>
+          <li><span class="mk">✓</span>一括入力と同時に<strong>承認書が自動で完成</strong>。印刷するだけ</li>
+          <li><span class="mk">✓</span><strong>1クリック</strong>で全項目の人数・単価・執行総額が一覧に</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ features -->
+<section id="features">
+  <div class="container">
+    <div class="center">
+      <span class="eyebrow">Features</span>
+      <h2 class="section-title">ボタン9個に、業務のすべてを。</h2>
+      <p class="section-lead">日々の操作はメニューのボタンと黄色いセルへの入力だけ。ExcelにもVBAにも詳しくなくて大丈夫です。</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature reveal">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1.4"/><circle cx="3.5" cy="12" r="1.4"/><circle cx="3.5" cy="18" r="1.4"/></svg></div>
+        <span class="when">毎年4月</span>
+        <h3>クラス替え名簿の自動取込</h3>
+        <p>掲示用名簿をそのまま貼り付けるだけで、クラスごとのブロック配置を自動解析。氏名でマスターと照合し、組・番号を一括反映。新入生の一括登録にも対応します。</p>
+      </div>
+      <div class="feature reveal d1">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19"/><path d="M6.5 15h4"/></svg></div>
+        <span class="when">支出のたび</span>
+        <h3>支出の一括入力</h3>
+        <p>件名と一人あたり金額を入力し、例外（対象外・返金・個別金額）の生徒だけ表に書いて実行。在籍生徒全員分が一度に入り、合計金額もその場で確認できます。</p>
+      </div>
+      <div class="feature reveal d2">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M4 21V10l8-6 8 6v11"/><path d="M9 21v-6h6v6"/></svg></div>
+        <span class="when">口座振替のたび</span>
+        <h3>収入の一括入力・未納管理</h3>
+        <p>振替できなかった生徒の精算番号だけを書けば、残り全員に自動入力。未納者には「未納」の印が自動で立ち、督促状づくりにそのまま使えます。</p>
+      </div>
+      <div class="feature reveal">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4"/><path d="M10 13h6M10 17h6"/><path d="M4 8v13h3"/></svg></div>
+        <span class="when">同時に自動作成</span>
+        <h3>承認書の自動作成</h3>
+        <p>支出承認書・収入承認書が、一括入力と同時に自動で埋まります。金額・対象生徒数・一人あたり金額は計算済み。確認して印刷するだけです。</p>
+      </div>
+      <div class="feature reveal d1">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-8M21 20H3"/></svg></div>
+        <span class="when">年度末</span>
+        <h3>決算集計ワンクリック</h3>
+        <p>使用中の全項目について、件名・対象人数・一人あたり・執行総額を一覧化。電卓での手集計と、決算書への数字の直打ちから解放されます。</p>
+      </div>
+      <div class="feature reveal d2">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div>
+        <span class="when">いつでも</span>
+        <h3>整合性チェック＆精算書PDF</h3>
+        <p>収支の突き合わせ・転退学処理漏れ・未納者一覧を自動点検。精算書は「組-番号_氏名.pdf」で生徒別に一括保存でき、保管用PCへの格納も簡単です。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ tour -->
+<section class="tour" id="tour">
+  <div class="container">
+    <div class="center">
+      <span class="eyebrow">Product Tour</span>
+      <h2 class="section-title">画面はぜんぶ、見慣れたExcel。</h2>
+      <p class="section-lead">新しいソフトの操作を覚える必要はありません。いつものExcelの中で完結します。</p>
+    </div>
+
+    <div class="tour-row">
+      <div class="tour-text reveal">
+        <div class="tour-num">TOUR 01</div>
+        <h3>支出入力は、<br>黄色いセルを埋めるだけ。</h3>
+        <p>支出No・件名・一人あたり金額を入れて、例外がある生徒だけ下の表に書きます。あとは「④ 支出を一括入力」を押すだけ。</p>
+        <ul>
+          <li>転退学・給付型奨学金の生徒は「0」で対象外に</li>
+          <li>返金はマイナス金額で記録、個別金額の上書きも自由</li>
+          <li>実行後に対象人数と合計金額をその場で確認</li>
+        </ul>
+      </div>
+      <div class="tour-visual reveal d1">
+        <svg viewBox="0 0 560 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="支出入力シートのイメージ">
+          <rect width="560" height="360" fill="#ffffff"/>
+          <rect width="560" height="40" fill="#1b2f56"/>
+          <text x="20" y="26" font-family="Noto Sans JP,sans-serif" font-size="13.5" fill="#fff" font-weight="700">支出の一括入力</text>
+          <g font-family="Noto Sans JP,sans-serif" font-size="12">
+            <rect x="20" y="58" width="130" height="30" fill="#dce8fa"/><text x="30" y="78" fill="#1b2f56" font-weight="700">支出No（1〜100）</text>
+            <rect x="152" y="58" width="120" height="30" fill="#fff3b0" stroke="#e0c341"/><text x="162" y="78" fill="#1f2733">30</text>
+            <rect x="20" y="92" width="130" height="30" fill="#dce8fa"/><text x="30" y="112" fill="#1b2f56" font-weight="700">件名</text>
+            <rect x="152" y="92" width="240" height="30" fill="#fff3b0" stroke="#e0c341"/><text x="162" y="112" fill="#1f2733">校外学習 しおり印刷代</text>
+            <rect x="20" y="126" width="130" height="30" fill="#dce8fa"/><text x="30" y="146" fill="#1b2f56" font-weight="700">一人あたり金額</text>
+            <rect x="152" y="126" width="120" height="30" fill="#fff3b0" stroke="#e0c341"/><text x="162" y="146" fill="#1f2733">520</text>
+            <rect x="20" y="160" width="130" height="30" fill="#dce8fa"/><text x="30" y="180" fill="#1b2f56" font-weight="700">対象</text>
+            <rect x="152" y="160" width="120" height="30" fill="#fff3b0" stroke="#e0c341"/><text x="162" y="180" fill="#1f2733">全員</text>
+            <text x="20" y="222" fill="#59657a" font-weight="700">― 例外表（例外の生徒だけ書く）―</text>
+            <rect x="20" y="232" width="90" height="26" fill="#1b2f56"/><text x="28" y="250" fill="#fff" font-size="11" font-weight="700">精算番号</text>
+            <rect x="112" y="232" width="160" height="26" fill="#1b2f56"/><text x="120" y="250" fill="#fff" font-size="11" font-weight="700">氏名（メモ）</text>
+            <rect x="274" y="232" width="130" height="26" fill="#1b2f56"/><text x="282" y="250" fill="#fff" font-size="11" font-weight="700">金額（0=対象外）</text>
+            <rect x="20" y="260" width="90" height="26" fill="#fff3b0" stroke="#e8e8e8"/><text x="28" y="278">45</text>
+            <rect x="112" y="260" width="160" height="26" fill="#fff" stroke="#e8e8e8"/><text x="120" y="278" fill="#8b95a7">転退学</text>
+            <rect x="274" y="260" width="130" height="26" fill="#fff3b0" stroke="#e8e8e8"/><text x="282" y="278">0</text>
+            <rect x="20" y="288" width="90" height="26" fill="#fff3b0" stroke="#e8e8e8"/><text x="28" y="306">12</text>
+            <rect x="112" y="288" width="160" height="26" fill="#fff" stroke="#e8e8e8"/><text x="120" y="306" fill="#8b95a7">欠席返金</text>
+            <rect x="274" y="288" width="130" height="26" fill="#fff3b0" stroke="#e8e8e8"/><text x="282" y="306">-1,040</text>
+          </g>
+          <rect x="424" y="292" width="116" height="40" rx="9" fill="#f5b731"/>
+          <text x="440" y="317" font-family="Noto Sans JP,sans-serif" font-size="13" fill="#12203d" font-weight="800">④ 一括入力</text>
+          <g transform="translate(500 306)"><path d="M0 0 L0 19 L5.2 14.6 L8.6 22.4 L12 20.8 L8.6 13 L15.5 13 Z" fill="#12203d" stroke="#fff" stroke-width="1.4"/></g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="tour-row flip">
+      <div class="tour-text reveal">
+        <div class="tour-num">TOUR 02</div>
+        <h3>クラス替えは、<br>貼り付けて、照合して、反映。</h3>
+        <p>クラス発表の掲示用名簿をそのまま貼り付けると、全クラスのブロックを自動で読み取ってマスターの氏名と照合します。</p>
+        <ul>
+          <li>「一致」はそのままでOK。自動で精算番号が入る</li>
+          <li>転入生や同姓同名だけ、精算番号を手で確定</li>
+          <li>精算番号と氏名の並び順は絶対に変えない安全設計</li>
+        </ul>
+      </div>
+      <div class="tour-visual reveal d1">
+        <svg viewBox="0 0 560 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="名簿一覧シートのイメージ">
+          <rect width="560" height="360" fill="#ffffff"/>
+          <rect width="560" height="40" fill="#1b2f56"/>
+          <text x="20" y="26" font-family="Noto Sans JP,sans-serif" font-size="13.5" fill="#fff" font-weight="700">名簿一覧（① 解析の結果）</text>
+          <g font-family="Noto Sans JP,sans-serif" font-size="12">
+            <rect x="20" y="56" width="60" height="28" fill="#1b2f56"/><text x="30" y="75" fill="#fff" font-size="11" font-weight="700">組</text>
+            <rect x="82" y="56" width="60" height="28" fill="#1b2f56"/><text x="92" y="75" fill="#fff" font-size="11" font-weight="700">番号</text>
+            <rect x="144" y="56" width="150" height="28" fill="#1b2f56"/><text x="154" y="75" fill="#fff" font-size="11" font-weight="700">氏名</text>
+            <rect x="296" y="56" width="140" height="28" fill="#1b2f56"/><text x="306" y="75" fill="#fff" font-size="11" font-weight="700">照合結果</text>
+            <rect x="438" y="56" width="100" height="28" fill="#1b2f56"/><text x="448" y="75" fill="#fff" font-size="11" font-weight="700">精算番号</text>
+          </g>
+          <g font-family="Noto Sans JP,sans-serif" font-size="12">
+            <!-- rows -->
+            <g><rect x="20" y="86" width="518" height="28" fill="#fafcff" stroke="#eef2f8"/><text x="30" y="105">2</text><text x="92" y="105">1</text><text x="154" y="105">あおき　あおい</text><rect x="300" y="90" width="52" height="20" rx="10" fill="#e9f7ee"/><text x="309" y="105" fill="#1e8e3e" font-weight="700">一致</text><text x="448" y="105">17</text></g>
+            <g><rect x="20" y="116" width="518" height="28" fill="#ffffff" stroke="#eef2f8"/><text x="30" y="135">2</text><text x="92" y="135">2</text><text x="154" y="135">いしだ　いつき</text><rect x="300" y="120" width="52" height="20" rx="10" fill="#e9f7ee"/><text x="309" y="135" fill="#1e8e3e" font-weight="700">一致</text><text x="448" y="135">203</text></g>
+            <g><rect x="20" y="146" width="518" height="28" fill="#fafcff" stroke="#eef2f8"/><text x="30" y="165">2</text><text x="92" y="165">3</text><text x="154" y="165">うえの　うた</text><rect x="300" y="150" width="52" height="20" rx="10" fill="#e9f7ee"/><text x="309" y="165" fill="#1e8e3e" font-weight="700">一致</text><text x="448" y="165">88</text></g>
+            <g><rect x="20" y="176" width="518" height="28" fill="#fdeeec"/><text x="30" y="195">2</text><text x="92" y="195">4</text><text x="154" y="195">えんどう　えま</text><rect x="300" y="180" width="84" height="20" rx="10" fill="#c0392b"/><text x="308" y="195" fill="#fff" font-weight="700" font-size="11">見つからず</text><rect x="440" y="178" width="70" height="24" fill="#fff3b0" stroke="#e0c341"/><text x="450" y="195" fill="#c0392b" font-weight="700">?</text></g>
+            <g><rect x="20" y="206" width="518" height="28" fill="#ffffff" stroke="#eef2f8"/><text x="30" y="225">2</text><text x="92" y="225">5</text><text x="154" y="225">おかべ　おうすけ</text><rect x="300" y="210" width="52" height="20" rx="10" fill="#e9f7ee"/><text x="309" y="225" fill="#1e8e3e" font-weight="700">一致</text><text x="448" y="225">156</text></g>
+            <g><rect x="20" y="236" width="518" height="28" fill="#fafcff" stroke="#eef2f8"/><text x="30" y="255">2</text><text x="92" y="255">6</text><text x="154" y="255">かねこ　かえで</text><rect x="300" y="240" width="52" height="20" rx="10" fill="#e9f7ee"/><text x="309" y="255" fill="#1e8e3e" font-weight="700">一致</text><text x="448" y="255">64</text></g>
+          </g>
+          <rect x="20" y="286" width="518" height="52" rx="9" fill="#eaf1fb"/>
+          <text x="36" y="308" font-family="Noto Sans JP,sans-serif" font-size="12" fill="#1b2f56" font-weight="700">313名を読み取りました ― 一致 312名 ／ 要確認 1名</text>
+          <text x="36" y="327" font-family="Noto Sans JP,sans-serif" font-size="11.5" fill="#59657a">赤い行のE列に精算番号を入れたら「② クラス替えを反映」へ</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="tour-row">
+      <div class="tour-text reveal">
+        <div class="tour-num">TOUR 03</div>
+        <h3>おかしな数字は、<br>点検ボタンが見つけます。</h3>
+        <p>収入−支出＝残金のズレ、転退学処理のし忘れ、件名の書き忘れ、未納者。決算前の不安を1クリックで点検します。</p>
+        <ul>
+          <li>生徒ごと・全体の金額のズレを自動検出</li>
+          <li>未納者一覧は督促状づくりの材料にそのまま</li>
+          <li>問題ゼロなら「問題なし」と言い切ってくれる安心感</li>
+        </ul>
+      </div>
+      <div class="tour-visual reveal d1">
+        <svg viewBox="0 0 560 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="チェック結果シートのイメージ">
+          <rect width="560" height="360" fill="#ffffff"/>
+          <rect width="560" height="40" fill="#1b2f56"/>
+          <text x="20" y="26" font-family="Noto Sans JP,sans-serif" font-size="13.5" fill="#fff" font-weight="700">整合性チェックの結果</text>
+          <g font-family="Noto Sans JP,sans-serif" font-size="12.5">
+            <text x="24" y="72" fill="#8b95a7" font-size="11.5">実行日時： 2026/07/02 09:30</text>
+            <text x="24" y="102" fill="#1b2f56" font-weight="800">【点検1】収入−支出＝残金 の確認</text>
+            <text x="40" y="126" fill="#1f2733">生徒の積み上げ： 収入60,606,488 − 支出5,160,657 ＝ 残金55,445,831</text>
+            <text x="40" y="148" fill="#1f2733">マスター合計行： 収入60,606,488 − 支出5,160,657 ＝ 残金55,445,831</text>
+            <rect x="36" y="158" width="90" height="22" rx="11" fill="#e9f7ee"/><text x="50" y="174" fill="#1e8e3e" font-weight="800" font-size="11.5">✓ 一致</text>
+            <text x="24" y="210" fill="#1b2f56" font-weight="800">【点検2】氏名が空欄なのに金額が入っている行</text>
+            <rect x="36" y="220" width="110" height="22" rx="11" fill="#e9f7ee"/><text x="50" y="236" fill="#1e8e3e" font-weight="800" font-size="11.5">✓ 問題なし</text>
+            <text x="24" y="272" fill="#1b2f56" font-weight="800">【点検4】未納の生徒</text>
+            <text x="40" y="296" fill="#1f2733">精算番号 7　　2組 14番　　未納額 -76,000</text>
+            <text x="40" y="318" fill="#1f2733">精算番号 44　 5組 3番　　 未納額 -76,000</text>
+            <rect x="330" y="282" width="200" height="46" rx="9" fill="#fff8e6" stroke="#f5b731"/>
+            <text x="344" y="302" fill="#b3372a" font-weight="700" font-size="11.5">この2名の督促状を出しましょう</text>
+            <text x="344" y="320" fill="#8b95a7" font-size="11">→ マスターの督促状シートへ</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ steps -->
+<section class="steps" id="steps">
+  <div class="container">
+    <div class="center">
+      <span class="eyebrow">How It Works</span>
+      <h2 class="section-title">導入は3ステップ、約10分。</h2>
+      <p class="section-lead">いまのマスターファイルには一切手を加えません。「隣に置く」だけです。</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card reveal">
+        <div class="no">01</div>
+        <h3>ファイルを置く</h3>
+        <p>アシスタントブックとVBAモジュール8本を学校PCにコピーし、Excelでインポート。マクロ有効ブック（.xlsm）で保存します。</p>
+        <span class="time">約5分</span>
+      </div>
+      <div class="step-card reveal d1">
+        <div class="no">02</div>
+        <h3>初期設定を実行</h3>
+        <p>「初期設定」を1回実行するとメニューにボタンが並びます。設定シートにマスターの場所と年度を入れれば準備完了です。</p>
+        <span class="time">約2分</span>
+      </div>
+      <div class="step-card reveal d2">
+        <div class="no">03</div>
+        <h3>練習してから本番へ</h3>
+        <p>付属の練習用ダミーファイル（架空の氏名）で一連の操作をリハーサル。安心してから本物のマスターにつなぎます。</p>
+        <span class="time">お好きなだけ</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ safety -->
+<section id="safety">
+  <div class="container">
+    <div class="center">
+      <span class="eyebrow">Safety</span>
+      <h2 class="section-title">「壊さない」ための、4つの安全装置。</h2>
+      <p class="section-lead">大切な会計データだからこそ、書き込みは慎重に設計されています。</p>
+    </div>
+    <div class="safety-grid">
+      <div class="safety-card reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v10m0 0l-3.5-3.5M12 13l3.5-3.5"/><path d="M4 17v2.5A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5V17"/></svg></div>
+        <div>
+          <h3>自動バックアップ</h3>
+          <p>書き込みのたびに、実行前のマスターを日時付きコピーで自動保存。バックアップフォルダのコピーを元の名前に戻すだけで、いつでも復旧できます。</p>
+        </div>
+      </div>
+      <div class="safety-card reveal d1">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/><path d="M8.5 11l2 2 3.5-4"/></svg></div>
+        <div>
+          <h3>構造チェック</h3>
+          <p>マスターの「データ」シートの形が想定と違うファイルには書き込みません。誤ったファイルへの書き込み事故を入口で防ぎます。</p>
+        </div>
+      </div>
+      <div class="safety-card reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4m0 4h.01"/><path d="M10.3 3.9L2.8 17a2 2 0 0 0 1.7 3h15a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></div>
+        <div>
+          <h3>上書き確認</h3>
+          <p>すでに金額が入っている列を指定すると、入力済みの人数を提示して確認します。「はい」と答えるまで、1円も書き込みません。</p>
+        </div>
+      </div>
+      <div class="safety-card reveal d1">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
+        <div>
+          <h3>触らない設計</h3>
+          <p>精算番号・氏名・数式列・行や列の並び順は一切変更しません。マスター内蔵の精算書・決算書の数式を壊さないことを最優先にしています。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ proof -->
+<section class="proof" id="proof">
+  <div class="container">
+    <div class="proof-grid">
+      <div>
+        <span class="eyebrow">Validated</span>
+        <h2 class="section-title">実物のファイルで、<br>検証済み。</h2>
+        <p class="section-lead" style="margin-bottom:32px;">思いつきの設計ではありません。実際に使われているマスター・名簿・承認書の構造解析に基づいて開発し、動作を確認しています。</p>
+        <ul class="proof-list reveal">
+          <li><span class="mk">✓</span>実物の掲示用名簿（8クラス×約40名のブロック配置）を313名分、自動解析に成功</li>
+          <li><span class="mk">✓</span>支出一括入力（単価520円×315名＋例外3件）後、支出合計・残金・精算書の数式反応をすべて確認</li>
+          <li><span class="mk">✓</span>収入一括入力（76,000円×312名＋未納3名）後、収入合計・未納判定の自動反応を確認</li>
+          <li><span class="mk">✓</span>クラス替え80名分の照合→反映のフルサイクルで不一致0件</li>
+          <li><span class="mk">✓</span>決算集計が実データの項目別合計と完全一致</li>
+        </ul>
+        <p class="proof-note">※検証は匿名化した実ファイルのコピーに対して実施。生徒の氏名・個人情報は一切保存・公開していません。</p>
+      </div>
+      <div class="proof-visual reveal d1">
+        <div class="t-bar"><i></i><i></i><i></i></div>
+        <div><span class="dim">$</span> 検証レポート — 実物マスター（匿名化コピー）</div>
+        <div><span class="ok">✓</span> 精算番号1 支出合計(+520) … <span class="ok">一致</span></div>
+        <div><span class="ok">✓</span> 精算番号12 返金(-1,040) … <span class="ok">一致</span></div>
+        <div><span class="ok">✓</span> 精算番号300 個別金額(+260) … <span class="ok">一致</span></div>
+        <div><span class="ok">✓</span> 収入 312名×76,000円 … <span class="ok">一致</span></div>
+        <div><span class="ok">✓</span> 合計行 (+23,712,000) … <span class="ok">一致</span></div>
+        <div><span class="ok">✓</span> 精算書 ③差引返還額 … <span class="ok">一致</span></div>
+        <div><span class="ok">✓</span> クラス替え 80/80名 反映 … <span class="ok">不一致 0件</span></div>
+        <div class="dim">=== 総合判定: <span class="ok">合格</span> ===</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ pricing -->
+<section id="pricing">
+  <div class="container">
+    <div class="center">
+      <span class="eyebrow">Pricing</span>
+      <h2 class="section-title">料金は、いつまでも無料。</h2>
+      <p class="section-lead">オープンソースとして全コードを公開しています。ライセンス費も、月額費も、追加費用もありません。</p>
+    </div>
+    <div class="pricing-card reveal">
+      <div class="head"><div class="plan">OPEN SOURCE PLAN</div></div>
+      <div class="price">¥0<small>/永年</small></div>
+      <div class="per">導入費・月額費・サポート更新費 すべて不要</div>
+      <ul>
+        <li>入力アシスタント本体（Excelブック + VBAモジュール8本）</li>
+        <li>練習用ダミーファイル一式（架空の氏名で安全にリハーサル）</li>
+        <li>導入・操作手順書PDF（全手順を画面付きで解説）</li>
+        <li>操作アニメーション（どこをクリックするかGIFで確認）</li>
+        <li>ソースコード公開 — 中身を確認・自由に改修OK</li>
+      </ul>
+      <div class="foot">
+        <a class="btn btn-navy" href="https://github.com/mochamofu/School-SysteBalances">GitHubから無料で入手<span class="arrow">→</span></a>
+        <p class="fine">動作環境: Windows + Microsoft 365（または Excel 2019 以降）</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ faq -->
+<section id="faq" style="background: var(--sky-50);">
+  <div class="container">
+    <div class="center">
+      <span class="eyebrow">FAQ</span>
+      <h2 class="section-title">よくある質問</h2>
+      <p class="section-lead">導入前の不安にお答えします。</p>
+    </div>
+    <div class="faq-list">
+      <details class="faq" open>
+        <summary><span class="q-mark">Q</span>いま使っているマスターファイルは作り直しになりますか？<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></summary>
+        <div class="ans">いいえ。「令和○年度生積立金」はそのまま使い続けます。アシスタントは隣に置く別ファイルで、マスターの決まった場所に書き込むだけです。行・列・数式には一切触れません。</div>
+      </details>
+      <details class="faq">
+        <summary><span class="q-mark">Q</span>Excelに詳しくなくても使えますか？<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></summary>
+        <div class="ans">はい。日々の操作はメニューのボタン9個と、黄色いセルへの入力だけです。VBAのコードにはすべて平易な日本語の説明を付けているので、後任への引き継ぎ時にも中身を確認できます。</div>
+      </details>
+      <details class="faq">
+        <summary><span class="q-mark">Q</span>間違えて実行してしまったら？<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></summary>
+        <div class="ans">すべての書き込みの直前に、マスターの控え（日時付きコピー）が自動で作られます。バックアップフォルダのコピーを元の名前に戻すだけで復旧できます。</div>
+      </details>
+      <details class="faq">
+        <summary><span class="q-mark">Q</span>生徒の個人情報は外部に送られませんか？<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></summary>
+        <div class="ans">送られません。インターネット接続は一切不要で、処理はすべて学校PCの中のExcelだけで完結します。クラウドへのアップロードや外部サーバーとの通信はありません。</div>
+      </details>
+      <details class="faq">
+        <summary><span class="q-mark">Q</span>動作環境は？<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></summary>
+        <div class="ans">Windows + Microsoft 365（または Excel 2019 以降）です。追加のソフトのインストールは不要です。</div>
+      </details>
+      <details class="faq">
+        <summary><span class="q-mark">Q</span>本当に無料ですか？<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></summary>
+        <div class="ans">無料です。生成スクリプト・VBAモジュール・手順書PDF・練習用ダミーファイルまで、すべてオープンソースとしてGitHubで公開しています。</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ final cta -->
+<section class="final">
+  <div class="container">
+    <h2>今年のクラス替えから、<br>間に合います。</h2>
+    <p>導入10分。まずは練習用ファイルで、320人分の入力が1クリックになる体験を。</p>
+    <div class="cta-row">
+      <a class="btn btn-amber" href="https://github.com/mochamofu/School-SysteBalances">無料で導入する<span class="arrow">→</span></a>
+      <a class="btn btn-outline-light" href="https://github.com/mochamofu/School-SysteBalances/blob/main/docs/%E5%85%A5%E5%8A%9B%E3%82%A2%E3%82%B7%E3%82%B9%E3%82%BF%E3%83%B3%E3%83%88_%E6%89%8B%E9%A0%86%E6%9B%B8.pdf">手順書PDFを読む</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container inner">
+    <div class="brand-line">
+      <svg class="mark" viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="22" fill="#f5b731"/><path d="M28 54 L45 70 L74 32" fill="none" stroke="#12203d" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>積立金会計 入力アシスタント ― 学校徴収金会計のための入力自動化パッケージ</span>
+    </div>
+    <a href="https://github.com/mochamofu/School-SysteBalances">github.com/mochamofu/School-SysteBalances</a>
+  </div>
+</footer>
+
+<script>
+  // ナビの背景切り替え
+  const nav = document.getElementById('nav');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 40);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // スクロール表示アニメーション
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
