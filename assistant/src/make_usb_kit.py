@@ -256,6 +256,7 @@ def main():
     d3 = os.path.join(KIT, "03_プレゼン資料")
     os.makedirs(d3)
     copy("site/index.html", d3, "製品LP.html")
+    copy("docs/積立金入力アシスタント_説明スライド.pptx", d3, required=False)
     copy("docs/使い方ガイド_図解版.pdf", d3, required=False)
     copy("docs/業務改善提案書.pdf", d3, required=False)
     copy("docs/入力アシスタント_手順書.pdf", d3)
