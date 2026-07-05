@@ -131,6 +131,59 @@ def build_master(names, out, filled=False):
     print("saved", out)
 
 
+def build_account_master(names, out):
+    """口座マスター（生徒⇔口座の紐付け台帳）の練習版。
+    レイアウト契約: シート名「口座マスター」、4行目から A=精算番号 B=氏名 C=口座記号(5桁) D=口座番号(8桁)"""
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "口座マスター"
+    ws["A1"] = "口座マスター（練習用・架空の口座番号）"
+    ws["A1"].font = Font(bold=True, size=14)
+    ws["A2"] = "年1回、自動払込利用申込書から更新する。振替結果取込（⑪）がこの表で生徒を特定する。"
+    for c, h in enumerate(["精算番号", "氏名", "口座記号(5桁)", "口座番号(8桁)", "備考"], start=1):
+        cell = ws.cell(row=3, column=c, value=h)
+        cell.font = Font(bold=True)
+    for i, name in enumerate(names):
+        r = 4 + i
+        ws.cell(row=r, column=1, value=i + 1)
+        ws.cell(row=r, column=2, value=name)
+        ws.cell(row=r, column=3, value=f"{10000 + i:05d}")           # 架空の記号
+        ws.cell(row=r, column=4, value=f"{80000000 + i * 111:08d}")  # 架空の番号
+    for col, w in {"A": 10, "B": 20, "C": 14, "D": 14, "E": 16}.items():
+        ws.column_dimensions[col].width = w
+    wb.save(out)
+    print("saved", out)
+
+
+def build_bank_result(names, out, unpaid_indices=(6, 43)):
+    """銀行（ゆうちょ風）の振替結果ダミー。
+    列: 口座記号 / 口座番号 / 金額 / 振替結果（0=振替済、1=資金不足）
+    unpaid_indices の生徒（0始まり）だけ振替不能にする。"""
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "振替結果"
+    ws["A1"] = "自動払込み 振替結果票（練習用ダミー）"
+    ws["A1"].font = Font(bold=True, size=14)
+    ws["A2"] = "※実際の銀行データを模した架空データ。この4列を「振替結果取込」シートの12行目に貼り付けて練習する。"
+    for c, h in enumerate(["口座記号", "口座番号", "金額", "振替結果"], start=1):
+        cell = ws.cell(row=3, column=c, value=h)
+        cell.font = Font(bold=True)
+    for i, name in enumerate(names):
+        r = 4 + i
+        ws.cell(row=r, column=1, value=f"{10000 + i:05d}")
+        ws.cell(row=r, column=2, value=f"{80000000 + i * 111:08d}")
+        if i in unpaid_indices:
+            ws.cell(row=r, column=3, value=0)
+            ws.cell(row=r, column=4, value="1")          # 資金不足コード
+        else:
+            ws.cell(row=r, column=3, value=76000)
+            ws.cell(row=r, column=4, value="0")          # 振替済コード
+    for col, w in {"A": 12, "B": 14, "C": 12, "D": 12}.items():
+        ws.column_dimensions[col].width = w
+    wb.save(out)
+    print("saved", out)
+
+
 def main():
     out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "output")
     os.makedirs(out_dir, exist_ok=True)
@@ -140,6 +193,9 @@ def main():
     build_master(names, os.path.join(out_dir, "練習用_令和X年度生積立金.xlsx"), filled=True)
     # 空のマスター（新入生登録の練習用）
     build_master(names, os.path.join(out_dir, "練習用_空のマスター.xlsx"), filled=False)
+    # 口座マスターと振替結果（振替結果取込⑪の練習用。精算番号7と44の2名を振替不能にしてある）
+    build_account_master(names, os.path.join(out_dir, "練習用_口座マスター.xlsx"))
+    build_bank_result(names, os.path.join(out_dir, "練習用_振替結果.xlsx"))
 
 
 if __name__ == "__main__":

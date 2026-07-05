@@ -103,6 +103,8 @@ def build():
     ic = label_input(ws, 5, "年度（数字）", note="例： 7　（令和7年度）")
     ic = label_input(ws, 6, "精算書PDFの保存先",
                      note="空欄でOK（マスターと同じ場所に「精算書PDF」フォルダを自動作成）")
+    ic = label_input(ws, 7, "口座マスターの場所",
+                     note="振替結果取込を使う場合のみ。例: C:\\Users\\jimu\\Desktop\\口座マスター.xlsx")
     ws.column_dimensions["B"].width = 24
     ws.column_dimensions["C"].width = 52
     ws["B8"] = "※黄色いセルが入力欄です。"
@@ -255,6 +257,50 @@ def build():
     ws["A2"].font = F_NOTE
     table_header(ws, 3, ["区分", "No", "件名", "日付", "対象人数", "一人あたり", "執行総額"])
     for col, w in {"A": 8, "B": 8, "C": 34, "D": 12, "E": 10, "F": 12, "G": 14}.items():
+        ws.column_dimensions[col].width = w
+
+    # ============ 振替結果取込 ============
+    ws = wb.create_sheet("振替結果取込")
+    header(ws, "振替結果取込（銀行の結果を貼るだけで未納者表を自動作成）", 9)
+    ws["A2"] = "銀行の振替結果の 口座記号・口座番号・金額・振替結果 を12行目から貼り付け、メニューの「⑪振替結果を照合」を実行します。"
+    ws["A2"].font = F_NOTE
+    ws["A3"] = "照合には「設定」シートC7の口座マスターを使います。結果はG〜I列と、収入入力シートの未納者表に自動で入ります。"
+    ws["A3"].font = F_NOTE
+    # サマリー欄（自動出力）
+    for r, label in [(5, "読取件数"), (6, "うち振替済"), (7, "うち未納"), (8, "不明口座（要確認）")]:
+        lc = ws.cell(row=r, column=7, value=label)
+        lc.font = F_LABEL
+        lc.fill = FILL_LBL
+        lc.border = BORDER
+        oc = ws.cell(row=r, column=8)
+        oc.fill = FILL_OUT
+        oc.border = BORDER
+    table_header(ws, 11, ["口座記号", "口座番号", "金額", "振替結果"], start_col=2)
+    table_header(ws, 11, ["精算番号(自動)", "氏名(自動)", "判定(自動)"], start_col=7)
+    for r in range(12, 312):
+        for c in range(2, 6):
+            cell = ws.cell(row=r, column=c)
+            cell.fill = FILL_IN
+            cell.border = BORDER
+        for c in range(7, 10):
+            ws.cell(row=r, column=c).border = BORDER
+    for col, w in {"A": 3, "B": 12, "C": 12, "D": 12, "E": 14, "F": 3, "G": 14, "H": 18, "I": 16}.items():
+        ws.column_dimensions[col].width = w
+
+    # ============ 年間予定表 ============
+    ws = wb.create_sheet("年間予定表")
+    header(ws, "年間徴収・支出予定表（年度初めに計画を書き、実行時は行番号で呼び出す）", 8)
+    ws["A2"] = "実行するときはメニューの「⑫予定を入力フォームへ転送」で行番号を指定 → 支出入力/収入入力シートに自動転記されます。"
+    ws["A2"].font = F_NOTE
+    table_header(ws, 3, ["行No", "予定月", "区分(支出/収入)", "No(支出No/収入枠No)", "件名", "支払先", "一人あたり金額", "メモ"])
+    for i, r in enumerate(range(4, 64)):
+        nc = ws.cell(row=r, column=1, value=i + 1)
+        nc.border = BORDER
+        for c in range(2, 9):
+            cell = ws.cell(row=r, column=c)
+            cell.fill = FILL_IN
+            cell.border = BORDER
+    for col, w in {"A": 6, "B": 8, "C": 14, "D": 16, "E": 28, "F": 20, "G": 14, "H": 20}.items():
         ws.column_dimensions[col].width = w
 
     # ============ チェック結果 ============
