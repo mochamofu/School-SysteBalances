@@ -259,6 +259,7 @@ def main():
     copy("docs/積立金入力アシスタント_説明スライド.pptx", d3, required=False)
     copy("docs/使い方ガイド_図解版.pdf", d3, required=False)
     copy("docs/業務改善提案書.pdf", d3, required=False)
+    copy("docs/価格とサービスのご説明.pdf", d3, required=False)
     copy("docs/入力アシスタント_手順書.pdf", d3)
     copy("docs/デモ実施手順書.pdf", d3, required=False)
     copy("docs/動作確認_2台PCシミュレーション手順書.pdf", d3, required=False)
