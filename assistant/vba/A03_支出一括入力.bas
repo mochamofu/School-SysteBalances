@@ -26,7 +26,7 @@ Private Const セル_日付 As String = "C7"
 Private Const セル_金額 As String = "C8"
 Private Const セル_対象 As String = "C9"      '「全員」または「例外表の生徒のみ」
 Private Const 例外_開始行 As Long = 14
-Private Const 例外_終了行 As Long = 213
+Private Const 例外_終了行 As Long = 1013
 Private Const 例外_列精算番号 As Long = 2     'B列
 Private Const 例外_列金額 As Long = 6         'F列
 
@@ -73,6 +73,12 @@ Public Sub 支出をマスターへ一括入力()
         ban = 入力.Cells(i, 例外_列精算番号).Value
         kin = 入力.Cells(i, 例外_列金額).Value
         If IsNumeric(ban) And Trim(CStr(ban)) <> "" Then
+            '精算番号が生徒の範囲（1〜321）外なら入力ミスとして知らせる
+            If CLng(ban) < 1 Or CLng(ban) > (行_生徒終了 - 行_生徒開始 + 1) Then
+                MsgBox "例外表の精算番号 " & ban & " は範囲外です（1〜" & _
+                       (行_生徒終了 - 行_生徒開始 + 1) & " で入力してください）。", vbExclamation
+                Exit Sub
+            End If
             If Not IsNumeric(kin) Or Trim(CStr(kin)) = "" Then
                 MsgBox 例外_開始行 & "行目以降の例外表で、精算番号 " & ban & " の金額欄が空です。" & vbCrLf & _
                        "対象外にするなら 0、金額を変えるならその金額を入れてください。", vbExclamation
