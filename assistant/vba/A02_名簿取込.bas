@@ -101,8 +101,9 @@ Private Sub ブロックを読み取る(貼付 As Worksheet, 見出し行 As Lon
                 If Len(Trim(v)) >= 2 And Not IsNumeric(Trim(v)) Then 文字の個数 = 文字の個数 + 1
             End If
         Next r
-        If 数の個数 >= 10 And 番号列 = 0 Then 番号列 = c
-        If 文字の個数 >= 10 And 氏名列 = 0 And c <> 番号列 Then 氏名列 = c
+        '閾値3：特別支援学級など10人未満の小規模クラスのブロックも拾えるようにする
+        If 数の個数 >= 3 And 番号列 = 0 Then 番号列 = c
+        If 文字の個数 >= 3 And 氏名列 = 0 And c <> 番号列 Then 氏名列 = c
     Next c
 
     If 番号列 = 0 Then Exit Sub '番号列が見つからないブロックは飛ばす

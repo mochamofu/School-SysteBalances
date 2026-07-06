@@ -141,7 +141,7 @@ def build():
     ws["B12"] = "（例：転退学者→0、給付型奨学金の生徒→0、途中参加→半額など）"
     ws["B12"].font = F_NOTE
     table_header(ws, 13, ["精算番号", "組（メモ）", "番号（メモ）", "氏名（メモ）", "金額（0=対象外）"], start_col=2)
-    for r in range(14, 214):
+    for r in range(14, 1014):
         ws.cell(row=r, column=2).fill = FILL_IN
         ws.cell(row=r, column=6).fill = FILL_IN
         for c in range(2, 7):
@@ -163,7 +163,7 @@ def build():
     ws["B10"] = "ここに書いた生徒は空欄のままになり、マスターのH列に「未納」の印が自動で立ちます。"
     ws["B10"].font = F_NOTE
     table_header(ws, 11, ["精算番号", "組（メモ）", "番号（メモ）", "氏名（メモ）"], start_col=2)
-    for r in range(12, 212):
+    for r in range(12, 1012):
         ws.cell(row=r, column=2).fill = FILL_IN
         for c in range(2, 6):
             ws.cell(row=r, column=c).border = BORDER
@@ -267,7 +267,7 @@ def build():
     ws["A3"] = "照合には「設定」シートC7の口座マスターを使います。結果はG〜I列と、収入入力シートの未納者表に自動で入ります。"
     ws["A3"].font = F_NOTE
     # サマリー欄（自動出力）
-    for r, label in [(5, "読取件数"), (6, "うち振替済"), (7, "うち未納"), (8, "不明口座（要確認）")]:
+    for r, label in [(5, "読取件数"), (6, "うち振替済"), (7, "うち未納"), (8, "不明口座（要確認）"), (9, "要確認（口座重複・重複行）")]:
         lc = ws.cell(row=r, column=7, value=label)
         lc.font = F_LABEL
         lc.fill = FILL_LBL
@@ -277,7 +277,7 @@ def build():
         oc.border = BORDER
     table_header(ws, 11, ["口座記号", "口座番号", "金額", "振替結果"], start_col=2)
     table_header(ws, 11, ["精算番号(自動)", "氏名(自動)", "判定(自動)"], start_col=7)
-    for r in range(12, 312):
+    for r in range(12, 1012):
         for c in range(2, 6):
             cell = ws.cell(row=r, column=c)
             cell.fill = FILL_IN

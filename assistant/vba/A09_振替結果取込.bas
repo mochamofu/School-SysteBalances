@@ -23,7 +23,7 @@ Option Explicit
 
 '「振替結果取込」シートの場所
 Private Const 取込_開始行 As Long = 12
-Private Const 取込_終了行 As Long = 311
+Private Const 取込_終了行 As Long = 1011   '最大1000件（実物320名の全校分でも余裕）
 Private Const 列_記号 As Long = 2      'B列
 Private Const 列_番号帯 As Long = 3    'C列
 Private Const 列_金額帯 As Long = 4    'D列
@@ -34,7 +34,7 @@ Private Const 列_出判定 As Long = 9    'I列
 
 '収入入力シートの未納者表（A04と同じ場所）
 Private Const 未納_開始行 As Long = 12
-Private Const 未納_終了行 As Long = 211
+Private Const 未納_終了行 As Long = 1011
 
 Public Sub 振替結果を照合()
     Dim 取込 As Worksheet
@@ -74,14 +74,22 @@ Public Sub 振替結果を照合()
 
     '--- 口座マスターを読み込む（記号-番号 → 精算番号・氏名）---
     '    レイアウト: 4行目から A=精算番号 B=氏名 C=口座記号 D=口座番号
-    Dim 辞書 As Object
+    '    同じ口座を2人以上が使っている場合（兄弟の共有口座など）は
+    '    どちらの生徒か機械では決められないので「重複口座」として記録し、
+    '    照合時に人間へ返す（勝手に片方だけに付けない安全設計）。
+    Dim 辞書 As Object, 重複口座 As Object
     Set 辞書 = CreateObject("Scripting.Dictionary")
+    Set 重複口座 = CreateObject("Scripting.Dictionary")
     Dim r As Long
     For r = 4 To 口座WS.Cells(口座WS.Rows.Count, 1).End(xlUp).Row
         Dim k As String
         k = 口座キー(口座WS.Cells(r, 3).Value, 口座WS.Cells(r, 4).Value)
-        If k <> "" And Not 辞書.Exists(k) Then
-            辞書.Add k, 口座WS.Cells(r, 1).Value & vbTab & CStr(口座WS.Cells(r, 2).Value)
+        If k <> "" Then
+            If 辞書.Exists(k) Then
+                重複口座(k) = True          '2人目以降 → 共有口座として印を付ける
+            Else
+                辞書.Add k, 口座WS.Cells(r, 1).Value & vbTab & CStr(口座WS.Cells(r, 2).Value)
+            End If
         End If
     Next r
     If Not 既に開いていた Then 口座WB.Close False
@@ -91,10 +99,14 @@ Public Sub 振替結果を照合()
     End If
 
     '--- 貼り付けられた振替結果を1行ずつ照合する ---
-    Dim 読取 As Long, 済 As Long, 未納 As Long, 不明 As Long
+    Dim 読取 As Long, 済 As Long, 未納 As Long, 不明 As Long, 要確認 As Long
     Dim 未納精算() As Long, 未納氏名() As String
     ReDim 未納精算(1 To 取込_終了行 - 取込_開始行 + 1)
     ReDim 未納氏名(1 To 取込_終了行 - 取込_開始行 + 1)
+
+    '同じ口座が結果票に2回出てくる（重複行）を見つけるための記録
+    Dim 既出 As Object
+    Set 既出 = CreateObject("Scripting.Dictionary")
 
     '前回の結果を消す
     取込.Range(取込.Cells(取込_開始行, 列_出精算), 取込.Cells(取込_終了行, 列_出判定)).ClearContents
@@ -104,7 +116,17 @@ Public Sub 振替結果を照合()
         キー = 口座キー(取込.Cells(r, 列_記号).Value, 取込.Cells(r, 列_番号帯).Value)
         If キー <> "" Then
             読取 = 読取 + 1
-            If 辞書.Exists(キー) Then
+            If 既出.Exists(キー) Then
+                '同じ口座が結果票に2回以上 → 二重計上を防ぐため人間に返す
+                取込.Cells(r, 列_出判定).Value = "重複行（要確認）"
+                要確認 = 要確認 + 1
+            ElseIf 重複口座.Exists(キー) Then
+                '口座マスターで複数生徒が共有する口座 → どちらか決められないので人間に返す
+                既出(キー) = True
+                取込.Cells(r, 列_出判定).Value = "口座重複（要確認）"
+                要確認 = 要確認 + 1
+            ElseIf 辞書.Exists(キー) Then
+                既出(キー) = True
                 Dim 部品 As Variant
                 部品 = Split(辞書(キー), vbTab)
                 取込.Cells(r, 列_出精算).Value = CLng(部品(0))
@@ -136,6 +158,7 @@ Public Sub 振替結果を照合()
     取込.Range("H6").Value = 済
     取込.Range("H7").Value = 未納
     取込.Range("H8").Value = 不明
+    取込.Range("H9").Value = 要確認
 
     '--- 収入入力シートの未納者表へ自動転記 ---
     Dim 収入 As Worksheet
@@ -152,9 +175,11 @@ Public Sub 振替結果を照合()
           "読取件数： " & 読取 & " 件" & vbCrLf & _
           "振替済　： " & 済 & " 名" & vbCrLf & _
           "未納　　： " & 未納 & " 名 → 収入入力シートの未納者表に転記済み" & vbCrLf & _
-          "不明口座： " & 不明 & " 件"
-    If 不明 > 0 Then
-        msg = msg & vbCrLf & vbCrLf & "※「不明口座」はI列で場所を確認し、口座マスターに追記してから再実行してください。"
+          "不明口座： " & 不明 & " 件" & vbCrLf & _
+          "要確認　： " & 要確認 & " 件（口座重複・重複行）"
+    If 不明 > 0 Or 要確認 > 0 Then
+        msg = msg & vbCrLf & vbCrLf & "※ I列が「不明口座」「口座重複」「重複行」の行は自動で処理していません。" & vbCrLf & _
+              "　 内容を確認し、必要なら手作業で対応してください。"
     Else
         msg = msg & vbCrLf & vbCrLf & "このあと「収入入力」シートの枠No・件名・日付・金額を入れて⑤を実行してください。"
     End If
@@ -176,7 +201,8 @@ End Function
 
 Private Function 数字だけ(v As Variant) As String
     Dim s As String, i As Long, c As String
-    s = Trim(CStr(v))
+    '全角数字（１２３…）が入っていても拾えるよう、まず半角に統一する
+    s = StrConv(Trim(CStr(v)), vbNarrow)
     For i = 1 To Len(s)
         c = Mid(s, i, 1)
         If c >= "0" And c <= "9" Then 数字だけ = 数字だけ & c

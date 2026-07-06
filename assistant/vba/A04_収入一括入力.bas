@@ -25,7 +25,7 @@ Private Const セル_件名 As String = "C5"
 Private Const セル_日付 As String = "C6"
 Private Const セル_金額 As String = "C7"
 Private Const 未納_開始行 As Long = 12
-Private Const 未納_終了行 As Long = 211
+Private Const 未納_終了行 As Long = 1011
 Private Const 未納_列精算番号 As Long = 2   'B列
 
 '==============================================================
@@ -90,6 +90,12 @@ Public Sub 収入をマスターへ一括入力()
         Dim ban As Variant
         ban = 入力.Cells(i, 未納_列精算番号).Value
         If IsNumeric(ban) And Trim(CStr(ban)) <> "" Then
+            '精算番号が生徒の範囲（1〜321）外なら入力ミスとして知らせる
+            If CLng(ban) < 1 Or CLng(ban) > (行_生徒終了 - 行_生徒開始 + 1) Then
+                MsgBox "未納者表の精算番号 " & ban & " は範囲外です（1〜" & _
+                       (行_生徒終了 - 行_生徒開始 + 1) & " で入力してください）。", vbExclamation
+                Exit Sub
+            End If
             未納数 = 未納数 + 1
             未納番号(未納数) = CLng(ban)
         End If
