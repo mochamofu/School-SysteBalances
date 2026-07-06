@@ -124,10 +124,10 @@ def main():
 
     d = os.path.join(u1, "3_資料")
     os.makedirs(d)
-    copy("docs/オンライン導入手順書.pdf", d)
-    copy("docs/使い方ガイド_図解版.pdf", d, required=False)
-    copy("docs/入力アシスタント_手順書.pdf", d)
-    copy("docs/価格とサービスのご説明.pdf", d, required=False)
+    copy("docs/04_オンライン導入/オンライン導入手順書.pdf", d)
+    copy("docs/01_学校向けマニュアル/使い方ガイド_図解版.pdf", d, required=False)
+    copy("docs/01_学校向けマニュアル/入力アシスタント_手順書.pdf", d)
+    copy("docs/02_営業・商談資料/価格とサービスのご説明.pdf", d, required=False)
 
     # ============ USB② 送信側PC用 ============
     u2 = os.path.join(KIT, "USB2_送信側PC用")
@@ -150,7 +150,7 @@ def main():
 
     d2 = os.path.join(u2, "3_資料")
     os.makedirs(d2)
-    copy("docs/オンライン導入手順書.pdf", d2)
+    copy("docs/04_オンライン導入/オンライン導入手順書.pdf", d2)
 
     # ============ 出荷前チェックリスト（USBには入れない・手元用） ============
     write_text(os.path.join(KIT, "出荷前チェックリスト_手元用.txt"),

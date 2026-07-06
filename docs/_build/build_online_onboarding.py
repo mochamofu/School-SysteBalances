@@ -3,7 +3,7 @@
 
 全国展開（郵送USB＋Zoomレクチャー）を想定した、学校側が自力で
 Zoom当日までの準備を終えられるようにするための手順書。
-生成: docs/オンライン導入手順書.pdf
+生成: docs/04_オンライン導入/オンライン導入手順書.pdf
 """
 import os
 import subprocess
@@ -193,4 +193,4 @@ if __name__ == "__main__":
     docx_path = os.path.join(scratch, "online_onboarding.docx")
     build(docx_path)
     here = os.path.dirname(os.path.abspath(__file__))
-    to_pdf(docx_path, os.path.join(here, "オンライン導入手順書.pdf"))
+    to_pdf(docx_path, os.path.join(here, "..", "04_オンライン導入", "オンライン導入手順書.pdf"))

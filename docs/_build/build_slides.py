@@ -2,14 +2,14 @@
 """レクチャー・商談兼用のパワポスライドを生成するスクリプト
 
 図解つき使い方ガイド（build_illustrated_guide.py）と同じ画面図を
-スライドに流用する。生成: docs/積立金入力アシスタント_説明スライド.pptx
+スライドに流用する。生成: docs/02_営業・商談資料/積立金入力アシスタント_説明スライド.pptx
 """
 import os
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-sys.path.insert(0, os.path.join(HERE, "animations"))
+sys.path.insert(0, os.path.join(HERE, "..", "animations"))
 
 from build_illustrated_guide import (  # noqa: E402
     fig_overview, fig_settings, fig_menu, fig_bank_paste, fig_income,
@@ -223,7 +223,7 @@ def build():
     cb.text_frame.text = "お問い合わせ: info@cocorolab.co.jp"
     _set_font(cb.text_frame, 16, color=WHITE, align=PP_ALIGN.CENTER)
 
-    out = os.path.join(HERE, "積立金入力アシスタント_説明スライド.pptx")
+    out = os.path.join(HERE, "..", "02_営業・商談資料", "積立金入力アシスタント_説明スライド.pptx")
     prs.save(out)
     print("saved", out)
 
