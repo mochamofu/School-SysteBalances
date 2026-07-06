@@ -72,11 +72,12 @@ def build():
     ws = wb.active
     ws.title = "メニュー"
     header(ws, "積立金会計 入力アシスタント", 10)
-    ws["A2"] = "はじめて使うとき：VBAモジュール（A00〜A07.bas）をインポート後、Alt+F8→「初期設定」を1回実行するとボタンが並びます。"
+    ws["A2"] = "はじめて使うとき：VBAモジュール（A00〜A11.bas）をインポート後、Alt+F8→「初期設定」を1回実行するとボタンが並びます。"
     ws["A2"].font = F_NOTE
     ws["B3"] = "◆ 名簿・クラス替え"; ws["B3"].font = F_LABEL
     ws["E3"] = "◆ 日々の入力"; ws["E3"].font = F_LABEL
     ws["H3"] = "◆ 年度末・点検"; ws["H3"].font = F_LABEL
+    ws["K3"] = "◆ 支出項目・引き継ぎ"; ws["K3"].font = F_LABEL
     for i in range(4, 10, 2):
         ws.row_dimensions[i].height = 24
         ws.row_dimensions[i + 1].height = 8
@@ -86,11 +87,12 @@ def build():
         "【支出のたび】 「支出入力」シートに件名と一人あたり金額 → ④一括入力 → 「支出承認書」を印刷",
         "【口座振替のたび】 「収入入力」シートに金額、未納者の精算番号だけ表に → ⑤一括入力",
         "【年度末】 ⑦決算集計 → 数字を決算書へ転記、⑧整合性チェック、⑨精算書PDF",
+        "【年度の変わり目】 ⑬支出項目を読み込む → 業者名と○×を直す → ⑭業者別に集計 → ⑮○の項目だけ来年の予定表へ",
         "※どの書き込みも、実行前にマスターのバックアップが自動で作られます。",
     ]
     for i, t in enumerate(flow):
         ws.cell(row=12 + i, column=1, value=t).font = F_BODY
-    for col, w in {"A": 3, "B": 26, "C": 3, "D": 3, "E": 26, "F": 3, "G": 3, "H": 26}.items():
+    for col, w in {"A": 3, "B": 26, "C": 3, "D": 3, "E": 26, "F": 3, "G": 3, "H": 26, "J": 3, "K": 26}.items():
         ws.column_dimensions[col].width = w
 
     # ============ 設定 ============
@@ -301,6 +303,40 @@ def build():
             cell.fill = FILL_IN
             cell.border = BORDER
     for col, w in {"A": 6, "B": 8, "C": 14, "D": 16, "E": 28, "F": 20, "G": 14, "H": 20}.items():
+        ws.column_dimensions[col].width = w
+
+    # ============ 支出項目一覧 ============
+    ws = wb.create_sheet("支出項目一覧")
+    header(ws, "支出項目一覧（業者ごとの見える化と、来年度への引き継ぎ）", 9)
+    ws["A2"] = "メニューの「⑬支出項目を読み込む」でマスターの支出100枠がここに並びます（マスターは読むだけ・書き換えません）。"
+    ws["A2"].font = F_NOTE
+    ws["A3"] = "C列の業者名は自由に編集OK（同じ業者名＝⑭でひとつに合算）。来年も使う項目はH列に○、使わないなら×。○だけが⑮で年間予定表に引き継がれます。"
+    ws["A3"].font = F_NOTE
+    table_header(ws, 5, ["支出No", "件名（マスターから）", "業者名（←自由に編集）", "日付",
+                         "対象人数", "一人あたり", "執行総額", "来年も使う(○/×)", "メモ"])
+    for r in range(6, 106):
+        for c in range(1, 10):
+            cell = ws.cell(row=r, column=c)
+            cell.border = BORDER
+            if c in (3, 8, 9):          # 業者名・○×・メモは手で直せる欄
+                cell.fill = FILL_IN
+            else:                        # それ以外は⑬が自動で埋める欄
+                cell.fill = FILL_OUT
+    # 右側：⑭業者別に集計する の出力欄（K〜Y列）
+    ws["K4"] = "―業者別集計（⑭の結果がここに出ます）―"
+    ws["K4"].font = F_LABEL
+    months = [f"{m}月" for m in list(range(4, 13)) + list(range(1, 4))]
+    table_header(ws, 5, ["業者名", "項目数", "年間合計"] + months, start_col=11)
+    for r in range(6, 66):
+        for c in range(11, 26):
+            cell = ws.cell(row=r, column=c)
+            cell.border = BORDER
+            cell.fill = FILL_OUT
+    widths = {"A": 8, "B": 30, "C": 24, "D": 12, "E": 9, "F": 11, "G": 13, "H": 15, "I": 16, "J": 3,
+              "K": 24, "L": 8, "M": 13}
+    for i in range(12):
+        widths[chr(ord("N") + i)] = 10
+    for col, w in widths.items():
         ws.column_dimensions[col].width = w
 
     # ============ チェック結果 ============
