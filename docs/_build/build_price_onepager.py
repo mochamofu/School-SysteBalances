@@ -2,7 +2,7 @@
 """お客様配布用の価格・サービス比較資料（A4・稟議添付用）を生成する。
 
 生成: scratchpad に docx を作り、LibreOffice で PDF 化して
-      docs/価格とサービスのご説明.pdf として保存する。
+      docs/02_営業・商談資料/価格とサービスのご説明.pdf として保存する。
 """
 import os
 import subprocess
@@ -196,4 +196,4 @@ if __name__ == "__main__":
     docx_path = os.path.join(scratch, "price_onepager.docx")
     build(docx_path)
     here = os.path.dirname(os.path.abspath(__file__))
-    to_pdf(docx_path, os.path.join(here, "価格とサービスのご説明.pdf"))
+    to_pdf(docx_path, os.path.join(here, "..", "02_営業・商談資料", "価格とサービスのご説明.pdf"))

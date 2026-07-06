@@ -203,7 +203,7 @@ def copy(src_rel, dst_dir, dst_name=None, required=True):
         if required:
             raise FileNotFoundError(f"必要なファイルがありません: {src_rel}\n"
                                     f"先に build_assistant.py / make_practice_files.py / "
-                                    f"docs/build_*_manual.py を実行してください。")
+                                    f"docs/_build/build_*_manual.py を実行してください。")
         print(f"  (スキップ: {src_rel})")
         return
     dst = os.path.join(dst_dir, dst_name or os.path.basename(src))
@@ -256,13 +256,13 @@ def main():
     d3 = os.path.join(KIT, "03_プレゼン資料")
     os.makedirs(d3)
     copy("site/index.html", d3, "製品LP.html")
-    copy("docs/積立金入力アシスタント_説明スライド.pptx", d3, required=False)
-    copy("docs/使い方ガイド_図解版.pdf", d3, required=False)
-    copy("docs/業務改善提案書.pdf", d3, required=False)
-    copy("docs/価格とサービスのご説明.pdf", d3, required=False)
-    copy("docs/入力アシスタント_手順書.pdf", d3)
-    copy("docs/デモ実施手順書.pdf", d3, required=False)
-    copy("docs/動作確認_2台PCシミュレーション手順書.pdf", d3, required=False)
+    copy("docs/02_営業・商談資料/積立金入力アシスタント_説明スライド.pptx", d3, required=False)
+    copy("docs/01_学校向けマニュアル/使い方ガイド_図解版.pdf", d3, required=False)
+    copy("docs/02_営業・商談資料/業務改善提案書.pdf", d3, required=False)
+    copy("docs/02_営業・商談資料/価格とサービスのご説明.pdf", d3, required=False)
+    copy("docs/01_学校向けマニュアル/入力アシスタント_手順書.pdf", d3)
+    copy("docs/03_現地デモ・レクチャー/デモ実施手順書.pdf", d3, required=False)
+    copy("docs/03_現地デモ・レクチャー/動作確認_2台PCシミュレーション手順書.pdf", d3, required=False)
     copy("docs/animations", d3, "操作アニメーション")
 
     # ---- 05 検証用フルスケールデータ ----
