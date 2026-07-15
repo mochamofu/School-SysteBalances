@@ -175,37 +175,42 @@ def build():
                 r.font.bold = (j == 0)
                 r.font.color.rgb = NAVY if j == 0 else GRAY
 
-    # ---- 12. 料金 ----
+    # ---- 12. 料金（仮・要相談） ----
     s = add_slide(prs)
-    bar(s, "料金プラン（初期費用0円・30日間無料トライアル）")
-    plans = [
-        ("ライト", "9,800円/月", "1学年（1会計）\nメールサポート", False),
-        ("スタンダード", "19,800円/月", "全学年（3会計）\n新年度対応アップデート\n導入支援・優先サポート", True),
-        ("プレミアム", "34,800円/月", "全学年＋様式カスタマイズ\n研修年2回・電話サポート\nデータ移行支援", False),
+    bar(s, "ご利用料金について（仮）")
+    card = s.shapes.add_shape(5, Cm(6.0), Cm(4.6), Cm(21.8), Cm(6.2))
+    card.fill.solid()
+    card.fill.fore_color.rgb = RGBColor(0xFF, 0xF7, 0xE0)
+    card.line.color.rgb = AMBER
+    card.line.width = Pt(3)
+    tf = card.text_frame
+    tf.word_wrap = True
+    tf.text = "要相談"
+    pp = tf.add_paragraph()
+    pp.text = "学校のご予算に合わせて個別にお見積りします"
+    for j, p in enumerate(tf.paragraphs):
+        p.alignment = PP_ALIGN.CENTER
+        for r in p.runs:
+            r.font.name = FONT
+            r.font.bold = True
+            r.font.size = Pt(44 if j == 0 else 18)
+            r.font.color.rgb = NAVY
+    notes = [
+        "・初期費用は0円。30日間の無料トライアルからノーリスクで始められます",
+        "・お見積り・ご相談は無料です（金額のお話はトライアルで価値をご確認いただいた後で結構です）",
+        "・年額・月額どちらでも、請求書払いに対応します",
     ]
-    for i, (name, price, desc, featured) in enumerate(plans):
-        x = Cm(1.6) + i * Cm(10.6)
-        card = s.shapes.add_shape(5, x, Cm(4.0), Cm(9.8), Cm(11.5))
-        card.fill.solid()
-        card.fill.fore_color.rgb = WHITE if not featured else RGBColor(0xFF, 0xF7, 0xE0)
-        card.line.color.rgb = AMBER if featured else RGBColor(0xD5, 0xDE, 0xED)
-        card.line.width = Pt(3 if featured else 1.5)
-        tf = card.text_frame
-        tf.word_wrap = True
-        tf.text = name + ("（おすすめ）" if featured else "")
-        pp = tf.add_paragraph(); pp.text = price
-        for line in desc.split("\n"):
-            pd = tf.add_paragraph(); pd.text = "・" + line
-        for j, p in enumerate(tf.paragraphs):
-            p.alignment = PP_ALIGN.CENTER if j <= 1 else PP_ALIGN.LEFT
-            for r in p.runs:
-                r.font.name = FONT
-                r.font.bold = j <= 1
-                r.font.size = Pt(20 if j == 0 else (28 if j == 1 else 14))
-                r.font.color.rgb = NAVY if j != 1 else BLUE
-    nb = s.shapes.add_textbox(Cm(1.6), Cm(16.0), Cm(30.5), Cm(1.6))
-    nb.text_frame.text = "年間契約・税別／年払いは2ヶ月分割引／請求書払い対応。生徒1人あたり月約62円（320名校・スタンダード）"
-    _set_font(nb.text_frame, 14, color=GRAY, align=PP_ALIGN.CENTER)
+    nb = s.shapes.add_textbox(Cm(4.0), Cm(11.6), Cm(26.0), Cm(5.0))
+    tfn = nb.text_frame
+    tfn.word_wrap = True
+    tfn.text = notes[0]
+    for line in notes[1:]:
+        pd = tfn.add_paragraph(); pd.text = line
+    for p in tfn.paragraphs:
+        for r in p.runs:
+            r.font.name = FONT
+            r.font.size = Pt(16)
+            r.font.color.rgb = GRAY
 
     # ---- 13. クロージング ----
     s = add_slide(prs)
@@ -219,9 +224,6 @@ def build():
     sb = s.shapes.add_textbox(Cm(2), Cm(10.2), Cm(30), Cm(2))
     sb.text_frame.text = "初期費用0円・30日間無料トライアル｜まずは架空データの練習環境からノーリスクで"
     _set_font(sb.text_frame, 18, color=AMBER, align=PP_ALIGN.CENTER)
-    cb = s.shapes.add_textbox(Cm(2), Cm(13.0), Cm(30), Cm(1.5))
-    cb.text_frame.text = "お問い合わせ: info@cocorolab.co.jp"
-    _set_font(cb.text_frame, 16, color=WHITE, align=PP_ALIGN.CENTER)
 
     out = os.path.join(HERE, "..", "02_営業・商談資料", "積立金入力アシスタント_説明スライド.pptx")
     prs.save(out)

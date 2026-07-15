@@ -143,9 +143,6 @@ def build():
 
     p = doc.add_paragraph()
     p.paragraph_format.space_before = Pt(18)
-    r = p.add_run("お問い合わせ：株式会社ココロラボ　info@cocorolab.co.jp")
-    set_jp(r, size=10.5, bold=True)
-    p = doc.add_paragraph()
     r = p.add_run("※本日の説明で使用したデータはすべて架空のものです。実在の生徒情報は含まれていません。")
     set_jp(r, size=9, color=GRAY)
 
