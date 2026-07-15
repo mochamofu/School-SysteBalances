@@ -263,6 +263,7 @@ def main():
     copy("docs/01_学校向けマニュアル/入力アシスタント_手順書.pdf", d3)
     copy("docs/03_現地デモ・レクチャー/デモ実施手順書.pdf", d3, required=False)
     copy("docs/03_現地デモ・レクチャー/現地レクチャー指南書_発表者用.pdf", d3, required=False)
+    copy("docs/03_現地デモ・レクチャー/レクチャー配布資料_職員用.pdf", d3, required=False)
     copy("docs/03_現地デモ・レクチャー/動作確認_2台PCシミュレーション手順書.pdf", d3, required=False)
     copy("docs/animations", d3, "操作アニメーション")
 
