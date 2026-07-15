@@ -92,9 +92,6 @@ def build():
     p = doc.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     r = p.add_run("説明をお聞きになりながら、右のメモ欄を自由にお使いください。")
     set_jp(r, size=10)
-    p = doc.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r = p.add_run("お名前（　　　　　　　　　　　）")
-    set_jp(r, size=10, color=GRAY)
 
     # ---- スライド1枚 = 表の1行（左：画像／右：メモ欄） ----
     table = doc.add_table(rows=len(pngs), cols=2)
