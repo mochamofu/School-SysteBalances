@@ -257,6 +257,7 @@ def main():
     os.makedirs(d3)
     copy("site/index.html", d3, "製品LP.html")
     copy("docs/02_営業・商談資料/積立金入力アシスタント_説明スライド.pptx", d3, required=False)
+    copy("docs/02_営業・商談資料/積立金入力アシスタント_詳細解説スライド60分.pptx", d3, required=False)
     copy("docs/01_学校向けマニュアル/使い方ガイド_図解版.pdf", d3, required=False)
     copy("docs/02_営業・商談資料/業務改善提案書.pdf", d3, required=False)
     copy("docs/02_営業・商談資料/価格とサービスのご説明.pdf", d3, required=False)
