@@ -33,6 +33,9 @@ THIN = Side(style="thin", color="B0B0B0")
 BORDER = Border(left=THIN, right=THIN, top=THIN, bottom=THIN)
 
 
+VERSION = "1.0.0"
+
+
 def header(ws, text, width=8):
     ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=width)
     c = ws.cell(row=1, column=1, value=text)
@@ -111,6 +114,8 @@ def build():
     ws.column_dimensions["C"].width = 52
     ws["B8"] = "※黄色いセルが入力欄です。"
     ws["B8"].font = F_NOTE
+    ws["B9"] = f"製品バージョン： {VERSION}"
+    ws["B9"].font = F_NOTE
 
     # ============ 名簿貼付 ============
     ws = wb.create_sheet("名簿貼付")
