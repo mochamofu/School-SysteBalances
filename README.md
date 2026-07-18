@@ -19,6 +19,7 @@ School-SysteBalances/
 │   ├── 03_現地デモ・レクチャー/  訪問デモ（2台PCシミュレーション）の手順書
 │   ├── 04_オンライン導入/       郵送USB＋Zoomで導入するときの一式
 │   ├── 05_開発・検証記録/       テストログ・実ファイル検証の記録
+│   ├── 06_法人化・創業融資/     会社設立→公庫融資のロードマップ・創業計画書下書き
 │   ├── _build/                上記PDF/スライドを生成するPythonスクリプト
 │   ├── animations/            操作アニメーションGIFと生成スクリプト
 │   └── README.md              docs内の詳しい案内
@@ -40,6 +41,7 @@ School-SysteBalances/
 | 郵送＋Zoomで導入する（全国展開） | `docs/04_オンライン導入/` ＋ 導入USB生成 `python assistant/src/make_school_usb_kit.py` |
 | 導入済みの学校をサポートする | `docs/01_学校向けマニュアル/` |
 | 品質の根拠を確認する | `docs/05_開発・検証記録/` |
+| 法人化・創業融資を進める | `docs/06_法人化・創業融資/` |
 | LPを公開・更新する | `site/`（Netlify Drop / Cloudflare Pages 推奨。詳細は `site/README.md`） |
 
 ## 生成物（キット）の作り方
