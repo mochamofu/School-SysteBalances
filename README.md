@@ -56,6 +56,7 @@ python assistant/src/make_fullscale_test_files.py  # 検証用データ（架空
 python assistant/src/make_usb_kit.py           # 営業・デモ用キット（自分が持ち歩く）
 python assistant/src/make_school_usb_kit.py    # 学校郵送用USB 2本（送りっぱなし用）
 python assistant/src/make_product_package.py   # ★製品版パッケージ v1.0（納品物そのもの）
+python assistant/src/make_field_test_kit.py    # 実機テストキット（2台PCでの検証用・記録ブック付き）
 ```
 
 いずれも `assistant/output/` に出力されます（git管理外）。
